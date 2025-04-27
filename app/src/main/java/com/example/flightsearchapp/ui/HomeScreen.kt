@@ -59,26 +59,25 @@ fun HomeScreen(
     val departureAirport by viewModel.departureAirport2.collectAsStateWithLifecycle(null)
     val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
     val searchResults by viewModel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
-    var isSearchBarVisible by rememberSaveable { mutableStateOf(false) }
+
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
-                if (!isExpanded) {
+                if (!viewModel.isSearchBarVisible) {
                     FlightSearchTopBar(
                         title = "HomeScreen",
                         navigateUp = { navController.navigateUp() },
                         scrollBehavior = scrollBehavior,
                         canNavigateBack = false,
-                        onBackClicked = { isSearchBarVisible = false },
-                        isSearchBarVisible = isSearchBarVisible,
-                        onSearchIconClicked = { isSearchBarVisible = true }
+                        onBackClicked = { viewModel.toggleSearchBarVisibility() },
+                        isSearchBarVisible = viewModel.isSearchBarVisible,
+                        onSearchIconClicked = { viewModel.toggleSearchBarVisibility() }
                     )
                 }
                 AnimatedVisibility(
-                    visible = isSearchBarVisible,
+                    visible = viewModel.isSearchBarVisible,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     TopAppBarSurface(
@@ -87,7 +86,7 @@ fun HomeScreen(
 
                         FlightSearchBar(
                             searchResults = searchResults,
-                            onBackClicked = { isSearchBarVisible = false },
+                            onBackClicked = { viewModel.toggleSearchBarVisibility() },
                             navController = navController,
                             searchQuery = viewModel.searchQuery,
                             onQueryChanged = {
@@ -95,13 +94,14 @@ fun HomeScreen(
                             },
                             onSearchQuery = {
                                 viewModel.onSearchQuery(viewModel.searchQuery)
-                                isExpanded = false
-                            }, isExpanded = isExpanded,
-                            onExpandedChange = { isExpanded = it },
+                                viewModel.onExpandedChange(isExpanded = false)
+                            }, isExpanded = viewModel.isSearchExpanded,
+                            onExpandedChange = { viewModel.onExpandedChange(it) },
                             onAirportClick = {
-                                isExpanded = false
+                                viewModel.onExpandedChange(isExpanded = false)
                                 viewModel.departureAirportChanged(it)
-                                navigateToFlightSearch }
+                                navigateToFlightSearch
+                            }
                         )
 
                     }

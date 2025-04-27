@@ -47,6 +47,9 @@ class FlightSearchViewmodel(
     var isExpanded by mutableStateOf(false)
         private set
 
+    fun onExpandedChange(isExpanded: Boolean) {
+        this.isExpanded = isExpanded
+    }
 
     var searchQuery by mutableStateOf("")
         private set
