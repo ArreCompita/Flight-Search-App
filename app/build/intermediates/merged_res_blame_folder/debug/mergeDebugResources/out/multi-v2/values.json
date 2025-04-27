@@ -21,6 +21,40 @@
                     }
                 },
                 {
+                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\FlightSearchApp\\app\\src\\main\\res\\values\\dimens.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "57",
+                        "endColumns": "46",
+                        "endOffsets": "99"
+                    },
+                    "to": {
+                        "startLines": "38",
+                        "startColumns": "4",
+                        "startOffsets": "2414",
+                        "endColumns": "46",
+                        "endOffsets": "2456"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\FlightSearchApp\\app\\src\\main\\res\\values\\colors.xml",
+                    "from": {
+                        "startLines": "7,2,3,4,5,6,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "293,57,105,153,201,247,336",
+                        "endColumns": "41,46,46,46,44,44,41",
+                        "endOffsets": "330,99,147,195,241,287,373"
+                    },
+                    "to": {
+                        "startLines": "5,10,11,12,13,14,15",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "370,675,722,769,816,861,906",
+                        "endColumns": "41,46,46,46,44,44,41",
+                        "endOffsets": "407,717,764,811,856,901,943"
+                    }
+                },
+                {
                     "source": "C:\\Users\\Alfredo G\\.gradle\\caches\\8.11.1\\transforms\\89ee0f2927d44ad9ebf465b3ac4d7ab9\\transformed\\savedstate-1.2.1\\res\\values\\values.xml",
                     "from": {
                         "startLines": "2",
@@ -57,20 +91,20 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\app\\src\\main\\res\\values\\colors.xml",
+                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\FlightSearchApp\\app\\src\\main\\res\\values\\themes.xml",
                     "from": {
-                        "startLines": "7,2,3,4,5,6,8",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "286,55,102,149,196,241,328",
-                        "endColumns": "41,46,46,46,44,44,41",
-                        "endOffsets": "323,97,144,191,236,281,365"
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "57",
+                        "endColumns": "92",
+                        "endOffsets": "145"
                     },
                     "to": {
-                        "startLines": "5,10,11,12,13,14,15",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "370,675,722,769,816,861,906",
-                        "endColumns": "41,46,46,46,44,44,41",
-                        "endOffsets": "407,717,764,811,856,901,943"
+                        "startLines": "237",
+                        "startColumns": "4",
+                        "startOffsets": "14957",
+                        "endColumns": "91",
+                        "endOffsets": "15044"
                     }
                 },
                 {
@@ -165,13 +199,13 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\app\\src\\main\\res\\values\\strings.xml",
+                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\FlightSearchApp\\app\\src\\main\\res\\values\\strings.xml",
                     "from": {
                         "startLines": "1,2,3",
                         "startColumns": "4,4,4",
-                        "startOffsets": "16,71,109",
+                        "startOffsets": "17,73,112",
                         "endColumns": "54,37,45",
-                        "endOffsets": "66,104,150"
+                        "endOffsets": "67,106,153"
                     },
                     "to": {
                         "startLines": "111,112,125",
@@ -179,23 +213,6 @@
                         "startOffsets": "6617,6672,7565",
                         "endColumns": "54,37,45",
                         "endOffsets": "6667,6705,7606"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\app\\src\\main\\res\\values\\themes.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "92",
-                        "endOffsets": "143"
-                    },
-                    "to": {
-                        "startLines": "237",
-                        "startColumns": "4",
-                        "startOffsets": "14957",
-                        "endColumns": "91",
-                        "endOffsets": "15044"
                     }
                 },
                 {
@@ -249,23 +266,6 @@
                         "startOffsets": "4771",
                         "endColumns": "65",
                         "endOffsets": "4832"
-                    }
-                },
-                {
-                    "source": "C:\\Users\\Alfredo G\\AndroidStudioProjects\\app\\src\\main\\res\\values\\dimens.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "57",
-                        "endColumns": "46",
-                        "endOffsets": "99"
-                    },
-                    "to": {
-                        "startLines": "38",
-                        "startColumns": "4",
-                        "startOffsets": "2414",
-                        "endColumns": "46",
-                        "endOffsets": "2456"
                     }
                 },
                 {

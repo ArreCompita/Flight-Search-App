@@ -54,10 +54,10 @@ com.example.flightsearchapp-lifecycle-viewmodel-savedstate-2.8.7-52 C:\Users\Alf
 com.example.flightsearchapp-navigation-runtime-ktx-2.8.4-53 C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\fc685ede81c200693c4a0ef4401dcd4d\transformed\navigation-runtime-ktx-2.8.4\res
 com.example.flightsearchapp-core-viewtree-1.0.0-54 C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\fcce1ce6f8c733e4c3330cb39bfcdd75\transformed\core-viewtree-1.0.0\res
 com.example.flightsearchapp-runtime-saveable-release-55 C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\fd3d6e943801efbc80c4d7bd3c9ca2dc\transformed\runtime-saveable-release\res
-com.example.flightsearchapp-pngs-56 C:\Users\Alfredo G\AndroidStudioProjects\app\build\generated\res\pngs\debug
-com.example.flightsearchapp-resValues-57 C:\Users\Alfredo G\AndroidStudioProjects\app\build\generated\res\resValues\debug
-com.example.flightsearchapp-packageDebugResources-58 C:\Users\Alfredo G\AndroidStudioProjects\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.flightsearchapp-packageDebugResources-59 C:\Users\Alfredo G\AndroidStudioProjects\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.flightsearchapp-debug-60 C:\Users\Alfredo G\AndroidStudioProjects\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.example.flightsearchapp-debug-61 C:\Users\Alfredo G\AndroidStudioProjects\app\src\debug\res
-com.example.flightsearchapp-main-62 C:\Users\Alfredo G\AndroidStudioProjects\app\src\main\res
+com.example.flightsearchapp-pngs-56 C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\generated\res\pngs\debug
+com.example.flightsearchapp-resValues-57 C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\generated\res\resValues\debug
+com.example.flightsearchapp-packageDebugResources-58 C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.flightsearchapp-packageDebugResources-59 C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.flightsearchapp-debug-60 C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.flightsearchapp-debug-61 C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\debug\res
+com.example.flightsearchapp-main-62 C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\res
