@@ -132,7 +132,7 @@ class FlightSearchViewmodel(
         }
 
     }
-    fun toggleFavorite(departureCode: String = departureIataCode, destinationCode: String = destinationIataCode) {
+    fun toggleFavorite(departureCode: String, destinationCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
             if (isFavorite(departureCode, destinationCode)) {
                 deleteFavoriteRoute(FavoriteRoute(0,departureCode, destinationCode))
