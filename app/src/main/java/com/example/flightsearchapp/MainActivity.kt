@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.flightsearchapp.ui.FlightSearchScreen
+import com.example.flightsearchapp.ui.navigation.FlightApp
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -20,7 +21,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlightSearchAppTheme {
-                FlightSearchApp()
+                FlightApp()
             }
         }
     }

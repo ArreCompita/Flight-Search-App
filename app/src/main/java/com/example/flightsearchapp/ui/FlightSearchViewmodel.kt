@@ -31,9 +31,56 @@ import kotlinx.coroutines.flow.stateIn
 @OptIn(ExperimentalCoroutinesApi::class)
 class FlightSearchViewmodel(
     private val Dao: FlightSearchDao,
-    private val userPreferences: UserPreferencesRepository): ViewModel()
-{
+    private val userPreferences: UserPreferencesRepository
+): ViewModel() {
 
+    //Search State
+    var searchQuery by mutableStateOf("")
+        private set
+    fun onSearchQueryChanged(newSearchQuery: String) {
+        searchQuery = newSearchQuery
+
+    }
+    //Airport selected
+    var selectedAirport by mutableStateOf<Airport?>(null)
+    private set
+
+    //Select Airport
+    fun selectAirport(airport: Airport) {
+        selectedAirport = airport
+    }
+
+    //Data flows
+    val allAirports: Flow<List<Airport>> = retrieveAllAirports().flowOn(Dispatchers.IO)
+    val favoriteRoutes: Flow<List<FavoriteRoute>> = retrieveFavoriteRoutes().flowOn(Dispatchers.IO)
+
+    //toggle favorite
+
+  fun toggleFavorite(departureCode: String, destinationCode: String) {
+      viewModelScope.launch(Dispatchers.IO) {
+          val existingRoute = retrieveFavoriteRoutes()
+
+      }
+  }
+
+
+    //Reactive Search
+    val searchResultsForLongLists: Flow<List<Airport>> =
+        snapshotFlow { searchQuery }.flatMapLatest { searchQuery ->
+            if (searchQuery.isNotEmpty()) {
+                searchAirport(searchQuery)
+            } else {
+                allAirports
+            }
+        }
+
+
+
+
+
+
+
+    //SearchBar State
     var isSearchBarVisible by mutableStateOf(false)
         private set
 
@@ -45,46 +92,14 @@ class FlightSearchViewmodel(
         this.isSearchBarVisible = isSearchBarVisible
     }
 
-
     fun onActiveChanged(newActiveValue: Boolean) {
         isSearchActive = newActiveValue
     }
 
-    var searchQuery by mutableStateOf("")
-        private set
-
-    var departureIataCode by mutableStateOf("")
-        private set
-
-    var destinationIataCode by mutableStateOf("")
-        private set
-
-
-//    private val _favoriteRoutesFlow = MutableStateFlow<List<FavoriteRoute>>(emptyList())
-//    val favoriteRoutesFlow: StateFlow<List<FavoriteRoute>> = _favoriteRoutesFlow.asStateFlow()
-//
-//    init {
-//        viewModelScope.launch {
-//            try {
-//                retrieveFavoriteRoutes().collect { favorites ->
-//                    _favoriteRoutesFlow.value = favorites
-//                }
-//            } catch (e: Exception) {
-//                Log.e("FLIGHTSEARCHVIEWMODEL", "Error retrieving favorite routes", e)
-//            }
-//        }
-//
-//    }
-    private val iataCodeRoute: String = FlightSearchDestinations.departureAirportArg
 
 
 
-    val favoriteRoutes: Flow<List<FavoriteRoute>> = retrieveFavoriteRoutes().flowOn(Dispatchers.IO)
-
-    val departureAirport: Flow<Airport?> = getAirportByIataCode(iataCodeRoute).flowOn(Dispatchers.IO)
-
-    val destinationAirport: Flow<Airport?> = getAirportByIataCode(String()).flowOn(Dispatchers.IO)
-
+    //AutoCompletion State
     val storedSearchQuery: Flow<String> = userPreferences.searchQuery
 
     val suggestions: Flow<String> =
@@ -95,26 +110,33 @@ class FlightSearchViewmodel(
             }
         }
 
-
-    val allAirports: Flow<List<Airport>> = retrieveAllAirports().flowOn(Dispatchers.IO)
-
-    val departureAirport2: Flow<Airport?> =
-        snapshotFlow { iataCodeRoute }.flatMapLatest { departureIataCode ->
-            getAirportByIataCode(departureIataCode)
+    fun onSearchQuery(searchQuery: String){
+        viewModelScope.launch {
+            userPreferences.saveSearchQuery(searchQuery)
         }
+    }
 
 
 
-    //for long lists
 
-    val searchResultsForLongLists: Flow<List<Airport>> =
-        snapshotFlow { searchQuery }.flatMapLatest { searchQuery ->
-            if (searchQuery.isNotEmpty()) {
-                searchAirport(searchQuery)
-            } else {
-                allAirports
-            }
-        }
+
+
+
+
+
+
+    fun searchAirport(searchQuery: String) : Flow<List<Airport>> = Dao.searchAirport(searchQuery)
+    //Get Airport by iataCode
+    fun getAirportByIataCode(iataCode: String) : Flow<Airport?> = Dao.getAirportByIataCode(iataCode)
+    //Get All Airports
+    fun retrieveAllAirports(): Flow<List<Airport>> = Dao.getAllAirports()
+    //Get Favorite Routes
+    fun retrieveFavoriteRoutes(): Flow<List<FavoriteRoute>> = Dao.getFavoriteRoutes()
+
+
+    //Insert and Delete Favorite Routes
+    suspend fun insertFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.insertFavoriteRoute(favoriteRoute)
+    suspend fun deleteFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.deleteFavoriteRoute(favoriteRoute)
 
 
 // for Short lists
@@ -152,42 +174,6 @@ class FlightSearchViewmodel(
 //            }
 //        }
 //    }
-
-    fun onSearchQueryChanged(newSearchQuery: String) {
-            searchQuery = newSearchQuery
-
-    }
-    fun departureAirportChanged(newDepartureIataCode: String) {
-        departureIataCode = newDepartureIataCode
-    }
-    fun destinationAirportChanged(newDestinationIataCode: String) {
-        destinationIataCode = newDestinationIataCode
-    }
-
-    fun onSearchQuery(searchQuery: String){
-        viewModelScope.launch {
-            userPreferences.saveSearchQuery(searchQuery)
-        }
-    }
-
-
-
-
-
-
-    fun searchAirport(searchQuery: String) : Flow<List<Airport>> = Dao.searchAirport(searchQuery)
-    //Get Airport by iataCode
-    fun getAirportByIataCode(iataCode: String) : Flow<Airport?> = Dao.getAirportByIataCode(iataCode)
-    //Get All Airports
-    fun retrieveAllAirports(): Flow<List<Airport>> = Dao.getAllAirports()
-    //Get Favorite Routes
-    fun retrieveFavoriteRoutes(): Flow<List<FavoriteRoute>> = Dao.getFavoriteRoutes()
-
-
-    //Insert and Delete Favorite Routes
-    suspend fun insertFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.insertFavoriteRoute(favoriteRoute)
-    suspend fun deleteFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.deleteFavoriteRoute(favoriteRoute)
-    //Save or delete Favourite Route
 
 
 

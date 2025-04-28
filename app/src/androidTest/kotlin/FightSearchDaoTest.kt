@@ -80,6 +80,17 @@ class FightSearchDaoTest {
 
     @Test
     @Throws(Exception::class)
+    fun getFavoriteRoutesByiataCode_shouldReturnMatchingFavoriteRoutes() = runBlocking {
+        addFavoriteRoutes()
+        val favoriteRoutes = flightSearchDao.getFavoriteRouteByIataCodes("CCC", "AAA").first()
+        assertEquals(favoriteRoute3, favoriteRoutes)
+
+
+
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun deleteFavoriteRoute_shouldDeleteFavoriteRoute() = runBlocking {
         addOneFavoriteRoute()
         deleteOneFavoriteRoute()

@@ -29,6 +29,13 @@ interface FlightSearchDao {
         "SELECT * FROM favorite "
     )
     fun getFavoriteRoutes(): Flow<List<FavoriteRoute>>
+
+    @Query(
+        """SELECT * FROM favorite 
+           WHERE departure_code = :deapartureIataCode AND destination_code = :arrivalIataCode LIMIT 1"""
+    )
+    fun getFavoriteRouteByIataCodes(deapartureIataCode: String, arrivalIataCode: String): Flow<FavoriteRoute?>
+
     @Insert
     suspend fun insertFavoriteRoute(favoriteRoute: FavoriteRoute)
     @Delete

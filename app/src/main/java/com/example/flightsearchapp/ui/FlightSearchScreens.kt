@@ -16,9 +16,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,68 +39,38 @@ import com.example.flightsearchapp.FlightSearchTopBar
 import com.example.flightsearchapp.TopAppBarSurface
 import com.example.flightsearchapp.ui.navigation.NavigationDestination
 
-object FlightSearchDestinations: NavigationDestination {
-    override val route = "flightSearch"
-    override val titleRes = R.string.app_name
-    const val departureAirportArg = "departureAirport"
-    val routeWithArgs = "$route/{$departureAirportArg}"
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightSearchScreen(
-    viewModel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory),
+    airportIataCode: String,
+    onBackClicked: () -> Unit,
+    viewModel: FlightSearchViewmodel ,
     navController: NavHostController = rememberNavController()
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val searchResults by viewModel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
     val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
-    val departureAirport by viewModel.departureAirport2.collectAsStateWithLifecycle(null)
+    val currentAirport = remember(airportIataCode){
+        allAirports.find { it.iataCode == airportIataCode }
+    }
 
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
-                if (!viewModel.isSearchActive) {
-                    FlightSearchTopBar(
+
+                FlightSearchTopBar(
                         title = "FlightSearch Screen",
                         navigateUp = { navController.navigateUp() },
                         scrollBehavior = scrollBehavior,
                         canNavigateBack = true,
-                        onBackClicked = { viewModel.onActiveChanged(false) },
+                        onBackClicked = {
+                            onBackClicked()
+                            viewModel.onActiveChanged(false) },
                         isSearchBarVisible = viewModel.isSearchBarVisible
 
                     )
-
-                }
-                AnimatedVisibility(
-                    visible = viewModel.isSearchBarVisible,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    TopAppBarSurface(
-                        scrollBehavior = scrollBehavior
-                    ) {
-                        EmbeddedSearchBar(
-                            onQueryChanged = {
-                                viewModel.onSearchQueryChanged(it)
-                            },
-                            onAirportClick = { },
-                            isSearchActive = viewModel.isSearchActive,
-                            onActiveChanged = { viewModel.onActiveChanged(it)  },
-                            searchQuery = viewModel.searchQuery,
-                            searchResults = searchResults,
-                            navController = navController,
-                            onSearch = {
-                                viewModel.onSearchQuery(viewModel.searchQuery)
-                                viewModel.onActiveChanged(false)
-                            },
-                            onBackClicked = { viewModel.toggleSearchBarVisibility(false) }
-                        )
-
-                    }
-                }
-
             }
         }
     ) { innerPadding ->
@@ -111,9 +83,9 @@ fun FlightSearchScreen(
                 .background(MaterialTheme.colorScheme.primaryContainer),
 
             ) {
-            if (departureAirport == null) {
+            if (currentAirport == null) {
                 Text(
-                    text = "FlightSearchScreen Departure airport null",
+                    text = "FlightSearchScreen Departure airport null or Loading Airport ",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -121,7 +93,7 @@ fun FlightSearchScreen(
             } else {
 
                 Text(
-                    text = "Flights from ${departureAirport!!.iataCode}",
+                    text = "Flights from ${currentAirport.iataCode}}",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -134,11 +106,9 @@ fun FlightSearchScreen(
                         key = { airport -> airport.id }
                     ) { airport ->
                         RouteSearchScreen(
-                            onFavoriteClicked = {
-
-                            },
+                            onFavoriteClicked = { viewModel.toggleFavorite(currentAirport.iataCode, airport.iataCode) },
                             contentPadding = innerPadding,
-                            departureAirport = departureAirport!!,
+                            departureAirport = currentAirport,
                             arrivalAirport = airport,
                             isFavorite = true
                         )

@@ -40,16 +40,11 @@ import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.ui.navigation.NavigationDestination
 
 
-object HomeDestination : NavigationDestination {
-    override val route = "home"
-    override val titleRes = R.string.app_name
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToFlightSearch: (String) -> Unit,
-    viewModel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory),
+    onAirportSelected: (Airport) -> Unit,
+    viewModel: FlightSearchViewmodel = viewModel(factory = ),
     navController: NavHostController = rememberNavController()
 ) {
     val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
@@ -102,8 +97,11 @@ fun HomeScreen(
                             }, isSearchActive = viewModel.isSearchActive,
                             onActiveChanged = { viewModel.onActiveChanged(it) },
                             onAirportClick = {
-                                viewModel.onActiveChanged(newActiveValue = false)
-                                navigateToFlightSearch
+                                viewModel.onActiveChanged( false)
+                                viewModel.toggleSearchBarVisibility(isSearchBarVisible = false)
+                                onAirportSelected(it)
+
+
                             }
                         )
 

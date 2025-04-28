@@ -45,14 +45,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.flightsearchapp.data.Airport
-import com.example.flightsearchapp.ui.FlightSearchDestinations
-import com.example.flightsearchapp.ui.navigation.FlightSearchNavHost
-
-@Composable
-fun FlightSearchApp(navController: NavHostController = rememberNavController()) {
-    FlightSearchNavHost(navController = navController)
-
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -138,7 +130,7 @@ fun FlightSearchTopBar(
 fun EmbeddedSearchBar(
     modifier: Modifier = Modifier,
     onQueryChanged: (String) -> Unit,
-    onAirportClick: (String) -> Unit,
+    onAirportClick: (Airport) -> Unit,
     isSearchActive: Boolean,
     onActiveChanged: (Boolean) -> Unit,
     searchQuery: String,
@@ -250,9 +242,8 @@ fun EmbeddedSearchBar(
                                 .padding(16.dp)
                                 .clickable(
                                     onClick = {
-                                        onAirportClick(airport.iataCode)
-                                        navController.navigate(FlightSearchDestinations.route + "/${airport.iataCode}")
-                                        onActiveChanged(false)
+                                        onAirportClick(airport)
+
 
                                     }
                                 ),

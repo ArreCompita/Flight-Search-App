@@ -209,6 +209,41 @@ public class FlightSearchDao_Impl(
     }
   }
 
+  public override fun getFavoriteRouteByIataCodes(deapartureIataCode: String,
+      arrivalIataCode: String): Flow<FavoriteRoute?> {
+    val _sql: String = """
+        |SELECT * FROM favorite 
+        |           WHERE departure_code = ? AND destination_code = ? LIMIT 1
+        """.trimMargin()
+    return createFlow(__db, false, arrayOf("favorite")) { _connection ->
+      val _stmt: SQLiteStatement = _connection.prepare(_sql)
+      try {
+        var _argIndex: Int = 1
+        _stmt.bindText(_argIndex, deapartureIataCode)
+        _argIndex = 2
+        _stmt.bindText(_argIndex, arrivalIataCode)
+        val _cursorIndexOfId: Int = getColumnIndexOrThrow(_stmt, "id")
+        val _cursorIndexOfDepartureCode: Int = getColumnIndexOrThrow(_stmt, "departure_code")
+        val _cursorIndexOfDestinationCode: Int = getColumnIndexOrThrow(_stmt, "destination_code")
+        val _result: FavoriteRoute?
+        if (_stmt.step()) {
+          val _tmpId: Int
+          _tmpId = _stmt.getLong(_cursorIndexOfId).toInt()
+          val _tmpDepartureCode: String
+          _tmpDepartureCode = _stmt.getText(_cursorIndexOfDepartureCode)
+          val _tmpDestinationCode: String
+          _tmpDestinationCode = _stmt.getText(_cursorIndexOfDestinationCode)
+          _result = FavoriteRoute(_tmpId,_tmpDepartureCode,_tmpDestinationCode)
+        } else {
+          _result = null
+        }
+        _result
+      } finally {
+        _stmt.close()
+      }
+    }
+  }
+
   public companion object {
     public fun getRequiredConverters(): List<KClass<*>> = emptyList()
   }
