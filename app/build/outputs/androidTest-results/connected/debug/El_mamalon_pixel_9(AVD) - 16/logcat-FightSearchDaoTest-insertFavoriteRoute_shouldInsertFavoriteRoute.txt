@@ -1,4 +1,0 @@
-04-23 16:48:28.133  5412  5425 I TestRunner: started: insertFavoriteRoute_shouldInsertFavoriteRoute(FightSearchDaoTest)
-04-23 16:48:28.207  5412  5425 D FlightSearchDaoTest: Database created successfully
-04-23 16:48:28.248  5412  5427 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
-04-23 16:48:28.404  5412  5425 I TestRunner: finished: insertFavoriteRoute_shouldInsertFavoriteRoute(FightSearchDaoTest)

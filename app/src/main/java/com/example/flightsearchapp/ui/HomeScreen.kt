@@ -23,9 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -35,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.flightsearchapp.FlightSearchBar
+import com.example.flightsearchapp.EmbeddedSearchBar
 import com.example.flightsearchapp.FlightSearchTopBar
 import com.example.flightsearchapp.R
 import com.example.flightsearchapp.TopAppBarSurface
@@ -55,25 +52,29 @@ fun HomeScreen(
     viewModel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory),
     navController: NavHostController = rememberNavController()
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val departureAirport by viewModel.departureAirport2.collectAsStateWithLifecycle(null)
     val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
     val searchResults by viewModel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
 
 
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     Scaffold(
         modifier = Modifier,
         topBar = {
             Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
-                if (!viewModel.isSearchBarVisible) {
+                if (!viewModel.isSearchActive) {
                     FlightSearchTopBar(
                         title = "HomeScreen",
                         navigateUp = { navController.navigateUp() },
                         scrollBehavior = scrollBehavior,
                         canNavigateBack = false,
-                        onBackClicked = { viewModel.toggleSearchBarVisibility() },
+                        onBackClicked = { viewModel.toggleSearchBarVisibility(isSearchBarVisible = false) },
                         isSearchBarVisible = viewModel.isSearchBarVisible,
-                        onSearchIconClicked = { viewModel.toggleSearchBarVisibility() }
+                        onSearchIconClicked = {
+                            viewModel.toggleSearchBarVisibility(isSearchBarVisible = true)
+                            viewModel.onActiveChanged(newActiveValue = true)
+                        }
                     )
                 }
                 AnimatedVisibility(
@@ -83,22 +84,22 @@ fun HomeScreen(
                     TopAppBarSurface(
                         scrollBehavior = scrollBehavior
                     ) {
-
-                        FlightSearchBar(
+                        EmbeddedSearchBar(
                             searchResults = searchResults,
-                            onBackClicked = { viewModel.toggleSearchBarVisibility() },
+                            onBackClicked = { viewModel.toggleSearchBarVisibility(isSearchBarVisible = false) },
                             navController = navController,
                             searchQuery = viewModel.searchQuery,
                             onQueryChanged = {
                                 viewModel.onSearchQueryChanged(it)
                             },
-                            onSearchQuery = {
+                            onSearch = {
                                 viewModel.onSearchQuery(viewModel.searchQuery)
-                                viewModel.onExpandedChange(isExpanded = false)
-                            }, isExpanded = viewModel.isSearchExpanded,
-                            onExpandedChange = { viewModel.onExpandedChange(it) },
+
+
+                            }, isSearchActive = viewModel.isSearchActive,
+                            onActiveChanged = { viewModel.onActiveChanged(it) },
                             onAirportClick = {
-                                viewModel.onExpandedChange(isExpanded = false)
+                                viewModel.onActiveChanged(newActiveValue = false)
                                 viewModel.departureAirportChanged(it)
                                 navigateToFlightSearch
                             }
@@ -110,55 +111,56 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
+        if (!viewModel.isSearchActive) {
+            Column(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                ) {
+                if (departureAirport == null) {
+                    Text(
+                        text = "No favorite routes123",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(8.dp)
+                    )
 
-        Column(
-            verticalArrangement = Arrangement.Top,
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                } else {
 
-            ) {
-            if (departureAirport == null) {
-                Text(
-                    text = "No favorite routes123",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
-                )
+                    Text(
+                        text = "favorite routes",
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                    LazyColumn(
+                        modifier = Modifier,
+                        contentPadding = innerPadding
+                    ) {
+                        items(
+                            items = allAirports,
+                            key = { airport -> airport.id }
+                        ) { airport ->
+                            val isFavorite =
+                                viewModel.isFavorite(departureAirport!!.iataCode, airport.iataCode)
+                            FavoriteRoutesScreen(
+                                onFavoriteClicked = {
+                                    viewModel.destinationAirportChanged(airport.iataCode)
+                                    viewModel::toggleFavorite
+                                },
+                                contentPadding = innerPadding,
+                                departureAirport = departureAirport!!,
+                                arrivalAirport = airport,
+                                isFavorite = isFavorite
+                            )
+                        }
 
-            } else {
 
-                Text(
-                    text = "favorite routes",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
-                )
-                LazyColumn(
-                    modifier = Modifier,
-                    contentPadding = innerPadding
-                ){
-                    items(
-                        items = allAirports,
-                        key = { airport -> airport.id }
-                    ) { airport ->
-                        val isFavorite = viewModel.isFavorite(departureAirport!!.iataCode, airport.iataCode)
-                        FavoriteRoutesScreen(
-                            onFavoriteClicked = {
-                                viewModel.destinationAirportChanged(airport.iataCode)
-                                viewModel::toggleFavorite
-                            },
-                            contentPadding = innerPadding,
-                            departureAirport = departureAirport!!,
-                            arrivalAirport = airport,
-                            isFavorite = isFavorite
-                        )
                     }
-
 
                 }
 
             }
-
         }
     }
 }

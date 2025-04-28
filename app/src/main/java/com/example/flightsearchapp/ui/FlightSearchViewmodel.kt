@@ -1,5 +1,6 @@
 package com.example.flightsearchapp.ui
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -33,22 +34,19 @@ class FlightSearchViewmodel(
 
     var isSearchBarVisible by mutableStateOf(false)
         private set
-    var isSearchExpanded by mutableStateOf(false)
+
+    var isSearchActive by mutableStateOf(false)
         private set
 
-    fun toggleSearchBarVisibility() {
-        isSearchBarVisible = !isSearchBarVisible
-        if (!isSearchBarVisible) {
-            isSearchExpanded = false
-            searchQuery = ""
-        }
+    fun toggleSearchBarVisibility(
+        isSearchBarVisible: Boolean ){
+        this.isSearchBarVisible = isSearchBarVisible
     }
 
-    var isExpanded by mutableStateOf(false)
-        private set
 
-    fun onExpandedChange(isExpanded: Boolean) {
-        this.isExpanded = isExpanded
+
+    fun onActiveChanged(newActiveValue: Boolean) {
+        isSearchActive = newActiveValue
     }
 
     var searchQuery by mutableStateOf("")
@@ -60,13 +58,19 @@ class FlightSearchViewmodel(
     var destinationIataCode by mutableStateOf("")
         private set
 
+
     private val _favoriteRoutesFlow = MutableStateFlow<List<FavoriteRoute>>(emptyList())
     val favoriteRoutesFlow: StateFlow<List<FavoriteRoute>> = _favoriteRoutesFlow.asStateFlow()
 
     init {
         viewModelScope.launch {
-            retrieveFavoriteRoutes().collect { favorites ->
-                _favoriteRoutesFlow.value = favorites
+
+            try {
+                retrieveFavoriteRoutes().collect { favorites ->
+                    _favoriteRoutesFlow.value = favorites
+                }
+            } catch (e: Exception) {
+                Log.e("FLIGHTSEARCHVIEWMODEL", "Error retrieving favorite routes", e)
             }
         }
 
@@ -99,6 +103,7 @@ class FlightSearchViewmodel(
 
 
     //for long lists
+
     val searchResultsForLongLists: Flow<List<Airport>> =
         snapshotFlow { searchQuery }.flatMapLatest { searchQuery ->
             if (searchQuery.isNotEmpty()) {

@@ -30,7 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.flightsearchapp.FlightSearchBar
+import com.example.flightsearchapp.EmbeddedSearchBar
 import com.example.flightsearchapp.R
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.FlightSearchTopBar
@@ -70,8 +70,8 @@ fun FlightSearchScreen(
                         onBackClicked = {
                             isSearchBarVisible = false
                                         },
-                        isSearchBarVisible = isSearchBarVisible
-                    ) {
+                        isSearchBarVisible = isSearchBarVisible )
+                    {
                         isExpanded = true
                         isSearchBarVisible = true
                     }
@@ -83,16 +83,17 @@ fun FlightSearchScreen(
                     TopAppBarSurface(
                         scrollBehavior = scrollBehavior
                     ) {
-                        FlightSearchBar(
+                        EmbeddedSearchBar(
                             onQueryChanged = {
                                 viewModel.onSearchQueryChanged(it)
                             },
                             onAirportClick = { },
-                            isExpanded = isExpanded,
-                            onExpandedChange = { isExpanded = it },
+                            isSearchActive = isExpanded,
+                            onActiveChanged = { isExpanded = it },
                             searchQuery = viewModel.searchQuery,
                             searchResults = searchResults,
-                            navController = navController, onSearchQuery = {
+                            navController = navController,
+                            onSearch = {
                                 viewModel.onSearchQuery(viewModel.searchQuery)
                                 isExpanded = false
                             },

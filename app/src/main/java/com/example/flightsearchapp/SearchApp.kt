@@ -135,44 +135,39 @@ fun FlightSearchTopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FlightSearchBar(
+fun EmbeddedSearchBar(
+    modifier: Modifier = Modifier,
     onQueryChanged: (String) -> Unit,
     onAirportClick: (String) -> Unit,
-    isExpanded: Boolean,
-    onExpandedChange: (Boolean) -> Unit,
+    isSearchActive: Boolean,
+    onActiveChanged: (Boolean) -> Unit,
     searchQuery: String,
     searchResults: List<Airport>,
     navController: NavController,
-    onSearchQuery: () -> Unit,
-    onBackClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    onSearch: ((String) -> Unit)? = null,
+    onBackClicked: () -> Unit
 ) {
-    val expandedChanged: (Boolean) -> Unit = { expanded ->
-        onExpandedChange(expanded)
-    }
     SearchBar(
         inputField = {
             SearchBarDefaults.InputField(
                 query = searchQuery,
                 onQueryChange = { onQueryChanged(it) },
-                onSearch = { onSearchQuery() },
-                expanded = isExpanded,
-                onExpandedChange = expandedChanged,
-                modifier = if (isExpanded) {
-                    modifier
-                        .animateContentSize(spring(stiffness = Spring.StiffnessHigh))
-                } else {
-                    modifier
-                        .padding(start = 12.dp, top = 2.dp, end = 12.dp, bottom = 12.dp)
-                        .fillMaxWidth()
-                        .animateContentSize(spring(stiffness = Spring.StiffnessHigh))
-                },
+                onSearch = { onSearch },
+                expanded = isSearchActive,
+                onExpandedChange = onActiveChanged,
+                modifier = if (isSearchActive) {modifier.animateContentSize((spring(stiffness = Spring.StiffnessHigh)))}
+                    else {
+                        modifier
+                    .padding(start = 12.dp, top = 2.dp, end = 12.dp, bottom = 12.dp)
+                    .fillMaxWidth()
+                    .animateContentSize(spring(stiffness = Spring.StiffnessHigh))
+                         },
                 placeholder = { Text("Search by airport name or IATA code") },
                 leadingIcon = {
-                    if (isExpanded) {
+                    if (isSearchActive) {
                         IconButton(
                             onClick = {
-                                expandedChanged(false)
+                                onActiveChanged(false)
                                 onBackClicked()
                             },
                         ) {
@@ -189,7 +184,7 @@ fun FlightSearchBar(
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                }, trailingIcon = if (isExpanded && searchQuery.isNotEmpty()) {
+                }, trailingIcon = if (isSearchActive && searchQuery.isNotEmpty()) {
                     {
                         IconButton(
                             onClick = {
@@ -208,17 +203,17 @@ fun FlightSearchBar(
                 }
             )
         },
-        expanded = isExpanded,
-        onExpandedChange = onExpandedChange,
+        expanded = isSearchActive,
+        onExpandedChange = onActiveChanged,
         colors = SearchBarDefaults.colors(
-            containerColor = if (isExpanded) {
+            containerColor = if (isSearchActive) {
                 MaterialTheme.colorScheme.background
             } else {
                 MaterialTheme.colorScheme.surfaceContainerLow
             },
         ),
         tonalElevation = 0.dp,
-        windowInsets = if (isExpanded) {
+        windowInsets = if (isSearchActive) {
             SearchBarDefaults.windowInsets
         } else {
             WindowInsets(0.dp)
@@ -257,7 +252,7 @@ fun FlightSearchBar(
                                     onClick = {
                                         onAirportClick(airport.iataCode)
                                         navController.navigate(FlightSearchDestinations.route + "/${airport.iataCode}")
-                                        onExpandedChange(false)
+                                        onActiveChanged(false)
 
                                     }
                                 ),
@@ -276,6 +271,8 @@ fun FlightSearchBar(
                     }
                 }
             }
+        } else{
+            Text(text = "SEARCH QUERY EMPTY EMBEDDED BAR")
         }
 
     }
