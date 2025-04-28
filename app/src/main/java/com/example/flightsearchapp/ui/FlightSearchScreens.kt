@@ -52,32 +52,28 @@ fun FlightSearchScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val searchResults by viewModel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
-    val departureAirport by viewModel.departureAirport2.collectAsStateWithLifecycle(null)
     val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
-    var isSearchBarVisible by rememberSaveable { mutableStateOf(false) }
+    val departureAirport by viewModel.departureAirport2.collectAsStateWithLifecycle(null)
+
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
-                if (!isExpanded) {
+                if (!viewModel.isSearchActive) {
                     FlightSearchTopBar(
                         title = "FlightSearch Screen",
                         navigateUp = { navController.navigateUp() },
                         scrollBehavior = scrollBehavior,
                         canNavigateBack = true,
-                        onBackClicked = {
-                            isSearchBarVisible = false
-                                        },
-                        isSearchBarVisible = isSearchBarVisible )
-                    {
-                        isExpanded = true
-                        isSearchBarVisible = true
-                    }
+                        onBackClicked = { viewModel.onActiveChanged(false) },
+                        isSearchBarVisible = viewModel.isSearchBarVisible
+
+                    )
+
                 }
                 AnimatedVisibility(
-                    visible = isSearchBarVisible,
+                    visible = viewModel.isSearchBarVisible,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     TopAppBarSurface(
@@ -88,16 +84,16 @@ fun FlightSearchScreen(
                                 viewModel.onSearchQueryChanged(it)
                             },
                             onAirportClick = { },
-                            isSearchActive = isExpanded,
-                            onActiveChanged = { isExpanded = it },
+                            isSearchActive = viewModel.isSearchActive,
+                            onActiveChanged = { viewModel.onActiveChanged(it)  },
                             searchQuery = viewModel.searchQuery,
                             searchResults = searchResults,
                             navController = navController,
                             onSearch = {
                                 viewModel.onSearchQuery(viewModel.searchQuery)
-                                isExpanded = false
+                                viewModel.onActiveChanged(false)
                             },
-                            onBackClicked = { isSearchBarVisible = false }
+                            onBackClicked = { viewModel.toggleSearchBarVisibility(false) }
                         )
 
                     }
@@ -125,7 +121,7 @@ fun FlightSearchScreen(
             } else {
 
                 Text(
-                    text = "favorite routes",
+                    text = "Flights from ${departureAirport!!.iataCode}",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -137,14 +133,14 @@ fun FlightSearchScreen(
                         items = allAirports,
                         key = { airport -> airport.id }
                     ) { airport ->
-                        val isFavorite = viewModel.isFavorite(departureAirport!!.iataCode, airport.iataCode)
                         RouteSearchScreen(
                             onFavoriteClicked = {
-                                viewModel.destinationAirportChanged(airport.iataCode)
-                                viewModel::toggleFavorite},
+
+                            },
+                            contentPadding = innerPadding,
                             departureAirport = departureAirport!!,
                             arrivalAirport = airport,
-                            isFavorite = isFavorite
+                            isFavorite = true
                         )
                     }
 

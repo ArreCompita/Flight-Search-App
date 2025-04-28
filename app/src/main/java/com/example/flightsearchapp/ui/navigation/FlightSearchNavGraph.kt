@@ -39,10 +39,6 @@ fun FlightSearchNavHost(
                 type = NavType.StringType
             })
         ) { backStackEntry ->
-            val departureAirport =
-                backStackEntry.arguments?.getString(FlightSearchDestinations.departureAirportArg)
-                    ?: error("Airport ID cannot be null")
-
             FlightSearchScreen(
                 navController = navController
             )

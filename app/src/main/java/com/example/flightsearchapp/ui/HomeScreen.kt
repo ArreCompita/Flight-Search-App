@@ -52,18 +52,19 @@ fun HomeScreen(
     viewModel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory),
     navController: NavHostController = rememberNavController()
 ) {
-    val departureAirport by viewModel.departureAirport2.collectAsStateWithLifecycle(null)
     val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
     val searchResults by viewModel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
-
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val favoriteRoutes by viewModel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
-                if (!viewModel.isSearchActive) {
+                AnimatedVisibility(
+                    visible = !viewModel.isSearchActive,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                ) {
                     FlightSearchTopBar(
                         title = "HomeScreen",
                         navigateUp = { navController.navigateUp() },
@@ -77,6 +78,8 @@ fun HomeScreen(
                         }
                     )
                 }
+
+
                 AnimatedVisibility(
                     visible = viewModel.isSearchBarVisible,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -100,7 +103,6 @@ fun HomeScreen(
                             onActiveChanged = { viewModel.onActiveChanged(it) },
                             onAirportClick = {
                                 viewModel.onActiveChanged(newActiveValue = false)
-                                viewModel.departureAirportChanged(it)
                                 navigateToFlightSearch
                             }
                         )
@@ -111,7 +113,6 @@ fun HomeScreen(
             }
         }
     ) { innerPadding ->
-        if (!viewModel.isSearchActive) {
             Column(
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier
@@ -119,7 +120,7 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.primaryContainer),
                 ) {
-                if (departureAirport == null) {
+                if (favoriteRoutes.isEmpty()) {
                     Text(
                         text = "No favorite routes123",
                         fontWeight = FontWeight.Bold,
@@ -138,20 +139,24 @@ fun HomeScreen(
                         contentPadding = innerPadding
                     ) {
                         items(
-                            items = allAirports,
-                            key = { airport -> airport.id }
-                        ) { airport ->
-                            val isFavorite =
-                                viewModel.isFavorite(departureAirport!!.iataCode, airport.iataCode)
+                            items = favoriteRoutes,
+                            key = { favoriteRoute -> favoriteRoute.id }
+                        ) { favoriteRoute ->
+                            val departureAirport = allAirports.find { airport ->
+                                airport.iataCode == favoriteRoute.departureCode
+                            }
+                            val arrivalAirport = allAirports.find { airport ->
+                                airport.iataCode == favoriteRoute.destinationCode
+                            }
+
                             FavoriteRoutesScreen(
                                 onFavoriteClicked = {
-                                    viewModel.destinationAirportChanged(airport.iataCode)
-                                    viewModel::toggleFavorite
+
                                 },
                                 contentPadding = innerPadding,
                                 departureAirport = departureAirport!!,
-                                arrivalAirport = airport,
-                                isFavorite = isFavorite
+                                arrivalAirport = arrivalAirport!!,
+                                isFavorite = true
                             )
                         }
 
@@ -161,7 +166,7 @@ fun HomeScreen(
                 }
 
             }
-        }
+
     }
 }
 
