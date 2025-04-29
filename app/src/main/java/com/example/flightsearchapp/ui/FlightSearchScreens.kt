@@ -43,6 +43,7 @@ fun FlightSearchScreen(
     onBackClicked: () -> Unit,
     navController: NavHostController = rememberNavController(),
     allAirports: List<Airport>,
+    canNavigateBack: Boolean,
     currentAirport: Airport?,
     onActiveChanged: (Boolean) -> Unit,
     isSearchBarVisible: Boolean,
@@ -59,7 +60,7 @@ fun FlightSearchScreen(
                         title = "FlightSearch Screen",
                         navigateUp = { navController.navigateUp() },
                         scrollBehavior = scrollBehavior,
-                        canNavigateBack = true,
+                        canNavigateBack = canNavigateBack,
                         onBackClicked = {
                             onBackClicked()
                             onActiveChanged(false) },

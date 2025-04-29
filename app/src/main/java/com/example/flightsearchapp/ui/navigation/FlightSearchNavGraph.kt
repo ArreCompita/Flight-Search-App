@@ -25,13 +25,19 @@ enum class Destination {
 fun FlightApp(
     viewmodel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory)
 ) {
-    val navController: NavHostController = rememberNavController()
+    val navController = rememberNavController()
     val allAirports = viewmodel.allAirports.collectAsStateWithLifecycle(emptyList())
     val searchResults = viewmodel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
     val favoriteRoutes = viewmodel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
+    val onBackHandler = {
+        navController.navigateUp() }
 
-    NavHost(navController = navController, startDestination = Destination.Home.name){
 
+
+    NavHost(
+        navController = navController,
+        startDestination = Destination.Home.name)
+    {
         //Home Screen
         composable(Destination.Home.name){
             HomeScreen(
@@ -62,12 +68,13 @@ fun FlightApp(
                 .collectAsStateWithLifecycle(null)
 
             FlightSearchScreen(
-                onBackClicked = { navController.popBackStack() },
+                onBackClicked = { onBackHandler() },
                 allAirports = allAirports.value,
                 currentAirport = currentAirport.value,
                 onActiveChanged = viewmodel::onActiveChanged,
                 isSearchBarVisible =  viewmodel.isSearchBarVisible,
                 toggleFavorite = viewmodel::toggleFavorite,
+                canNavigateBack = navController.previousBackStackEntry != null,
             )
         }
 
