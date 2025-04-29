@@ -3,6 +3,7 @@ package com.example.flightsearchapp.ui.navigation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -14,42 +15,59 @@ import com.example.flightsearchapp.ui.FlightSearchScreen
 import com.example.flightsearchapp.ui.FlightSearchViewmodel
 import com.example.flightsearchapp.ui.HomeScreen
 
-sealed class Destination(val route: String) {
-    object Home : Destination("home")
-    object FlightSearch : Destination("flightList/{airportIataCode}")
-    fun createRoute(airportIataCode: String) = "flightList/$airportIataCode"
+enum class Destination {
+    Home,
+    FlightSearch
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FlightApp() {
-    val viewmodel: FlightSearchViewmodel = viewModel ()
+fun FlightApp(
+    viewmodel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory)
+) {
     val navController: NavHostController = rememberNavController()
+    val allAirports = viewmodel.allAirports.collectAsStateWithLifecycle(emptyList())
+    val searchResults = viewmodel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
+    val favoriteRoutes = viewmodel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
 
-    NavHost(navController = navController, startDestination = Destination.Home.route){
+    NavHost(navController = navController, startDestination = Destination.Home.name){
 
         //Home Screen
-        composable(Destination.Home.route){
+        composable(Destination.Home.name){
             HomeScreen(
                 onAirportSelected = { airport ->
                     viewmodel.selectAirport(airport)
-                    navController.navigate(
-                        Destination.FlightSearch.createRoute(airport.iataCode)
+                    navController.navigate("${Destination.FlightSearch.name}/${airport.iataCode}"
                     )
-                }, viewModel = viewmodel
+                },
+                allAirports = allAirports.value,
+                searchResults = searchResults.value,
+                favoriteRoutes = favoriteRoutes.value,
+                isSearchActive = viewmodel.isSearchActive,
+                toggleSearchBarVisibility = viewmodel::toggleSearchBarVisibility,
+                isSearchBarVisible = viewmodel.isSearchBarVisible,
+                onActiveChanged = viewmodel::onActiveChanged,
+                onSearchQueryChanged = viewmodel::onSearchQueryChanged,
+                onSearchQuery = viewmodel::onSearchQuery,
+                searchQuery = viewmodel.searchQuery,
             )
         }
+        val airportIataCodeArgument = "airportIataCode"
         composable(
-            route = Destination.FlightSearch.route,
-            arguments = listOf(navArgument("airportIataCode") {
-                type = NavType.StringType
-            })
-        ){
-            val airportIataCode = it.arguments?.getString("airportIataCode") ?: ""
+            route = Destination.FlightSearch.name + "/{$airportIataCodeArgument}",
+            arguments = listOf(navArgument(airportIataCodeArgument) { type = NavType.StringType })
+        ){ backstackEntry ->
+            val airportIataCode = backstackEntry.arguments?.getString("airportIataCode") ?: ""
+            val currentAirport = viewmodel.getAirportByIataCode(airportIataCode)
+                .collectAsStateWithLifecycle(null)
+
             FlightSearchScreen(
-                airportIataCode = airportIataCode,
                 onBackClicked = { navController.popBackStack() },
-                viewModel = viewmodel
+                allAirports = allAirports.value,
+                currentAirport = currentAirport.value,
+                onActiveChanged = viewmodel::onActiveChanged,
+                isSearchBarVisible =  viewmodel.isSearchBarVisible,
+                toggleFavorite = viewmodel::toggleFavorite,
             )
         }
 

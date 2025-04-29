@@ -22,42 +22,45 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.flightsearchapp.EmbeddedSearchBar
 import com.example.flightsearchapp.FlightSearchTopBar
-import com.example.flightsearchapp.R
 import com.example.flightsearchapp.TopAppBarSurface
 import com.example.flightsearchapp.data.Airport
-import com.example.flightsearchapp.ui.navigation.NavigationDestination
+import com.example.flightsearchapp.data.FavoriteRoute
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onAirportSelected: (Airport) -> Unit,
-    viewModel: FlightSearchViewmodel = viewModel(factory = ),
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    allAirports: List<Airport>,
+    searchResults: List<Airport>,
+    favoriteRoutes: List<FavoriteRoute>,
+    isSearchActive: Boolean,
+    toggleSearchBarVisibility: (Boolean) -> Unit,
+    isSearchBarVisible: Boolean,
+    onActiveChanged: (Boolean) -> Unit,
+    onSearchQueryChanged: (String) -> Unit,
+    onSearchQuery: (String) -> Unit,
+    searchQuery: String,
 ) {
-    val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
-    val searchResults by viewModel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val favoriteRoutes by viewModel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
                 AnimatedVisibility(
-                    visible = !viewModel.isSearchActive,
+                    visible = !isSearchActive,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     FlightSearchTopBar(
@@ -65,18 +68,18 @@ fun HomeScreen(
                         navigateUp = { navController.navigateUp() },
                         scrollBehavior = scrollBehavior,
                         canNavigateBack = false,
-                        onBackClicked = { viewModel.toggleSearchBarVisibility(isSearchBarVisible = false) },
-                        isSearchBarVisible = viewModel.isSearchBarVisible,
+                        onBackClicked = { toggleSearchBarVisibility(false) },
+                        isSearchBarVisible = isSearchBarVisible,
                         onSearchIconClicked = {
-                            viewModel.toggleSearchBarVisibility(isSearchBarVisible = true)
-                            viewModel.onActiveChanged(newActiveValue = true)
+                            toggleSearchBarVisibility(true)
+                            onActiveChanged(true)
                         }
                     )
                 }
 
 
                 AnimatedVisibility(
-                    visible = viewModel.isSearchBarVisible,
+                    visible = isSearchBarVisible,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     TopAppBarSurface(
@@ -84,21 +87,21 @@ fun HomeScreen(
                     ) {
                         EmbeddedSearchBar(
                             searchResults = searchResults,
-                            onBackClicked = { viewModel.toggleSearchBarVisibility(isSearchBarVisible = false) },
+                            onBackClicked = { toggleSearchBarVisibility(false) },
                             navController = navController,
-                            searchQuery = viewModel.searchQuery,
+                            searchQuery = searchQuery,
                             onQueryChanged = {
-                                viewModel.onSearchQueryChanged(it)
+                                onSearchQueryChanged(it)
                             },
                             onSearch = {
-                                viewModel.onSearchQuery(viewModel.searchQuery)
+                                onSearchQuery(searchQuery)
 
 
-                            }, isSearchActive = viewModel.isSearchActive,
-                            onActiveChanged = { viewModel.onActiveChanged(it) },
+                            }, isSearchActive = isSearchActive,
+                            onActiveChanged = { onActiveChanged(it) },
                             onAirportClick = {
-                                viewModel.onActiveChanged( false)
-                                viewModel.toggleSearchBarVisibility(isSearchBarVisible = false)
+                                onActiveChanged( false)
+                                toggleSearchBarVisibility(false)
                                 onAirportSelected(it)
 
 

@@ -32,28 +32,23 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.flightsearchapp.EmbeddedSearchBar
-import com.example.flightsearchapp.R
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.FlightSearchTopBar
-import com.example.flightsearchapp.TopAppBarSurface
-import com.example.flightsearchapp.ui.navigation.NavigationDestination
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightSearchScreen(
-    airportIataCode: String,
     onBackClicked: () -> Unit,
-    viewModel: FlightSearchViewmodel ,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    allAirports: List<Airport>,
+    currentAirport: Airport?,
+    onActiveChanged: (Boolean) -> Unit,
+    isSearchBarVisible: Boolean,
+    toggleFavorite: (String, String) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val allAirports by viewModel.allAirports.collectAsStateWithLifecycle(emptyList())
-    val currentAirport = remember(airportIataCode){
-        allAirports.find { it.iataCode == airportIataCode }
-    }
-
 
     Scaffold(
         modifier = Modifier,
@@ -67,8 +62,8 @@ fun FlightSearchScreen(
                         canNavigateBack = true,
                         onBackClicked = {
                             onBackClicked()
-                            viewModel.onActiveChanged(false) },
-                        isSearchBarVisible = viewModel.isSearchBarVisible
+                            onActiveChanged(false) },
+                        isSearchBarVisible = isSearchBarVisible
 
                     )
             }
@@ -106,7 +101,7 @@ fun FlightSearchScreen(
                         key = { airport -> airport.id }
                     ) { airport ->
                         RouteSearchScreen(
-                            onFavoriteClicked = { viewModel.toggleFavorite(currentAirport.iataCode, airport.iataCode) },
+                            onFavoriteClicked = { toggleFavorite(currentAirport.iataCode, airport.iataCode) },
                             contentPadding = innerPadding,
                             departureAirport = currentAirport,
                             arrivalAirport = airport,
