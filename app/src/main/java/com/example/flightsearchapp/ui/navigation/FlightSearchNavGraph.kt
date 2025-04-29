@@ -12,6 +12,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,6 +25,8 @@ import com.example.flightsearchapp.EmbeddedSearchBar
 import com.example.flightsearchapp.FlightSearchTopBar
 import com.example.flightsearchapp.R
 import com.example.flightsearchapp.TopAppBarSurface
+import com.example.flightsearchapp.data.Airport
+import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.ui.FlightSearchScreen
 import com.example.flightsearchapp.ui.FlightSearchViewmodel
 import com.example.flightsearchapp.ui.HomeScreen
@@ -63,8 +66,7 @@ fun FlightApp(
                 ) {
                     FlightSearchTopBar(
                         title = topBarTitle.value,
-                        navigateUp = { navController.navigateUp() },
-                        scrollBehavior =  scrollBehavior,
+                        scrollBehavior = scrollBehavior,
                         canNavigateBack = navController.previousBackStackEntry != null,
                         onBackClicked = { onBackHandler() },
                         isSearchBarVisible = viewmodel.isSearchBarVisible,
@@ -95,16 +97,14 @@ fun FlightApp(
 
                             }, isSearchActive = viewmodel.isSearchActive,
                             onActiveChanged = { viewmodel.onActiveChanged(it) },
-                            onAirportClick = {
-                                airport ->
+                            onAirportClick = { airport ->
                                 viewmodel.selectAirport(airport)
                                 navController.navigate(
                                     "${Destination.FlightSearch.name}/${airport.iataCode}"
                                 )
                                 topBarTitle.value = " FlightSearchScreen"
-                                viewmodel.onActiveChanged( false)
+                                viewmodel.onActiveChanged(false)
                                 viewmodel.toggleSearchBarVisibility(false)
-
 
 
                             }
@@ -142,8 +142,8 @@ fun FlightApp(
                 val currentAirport = viewmodel.getAirportByIataCode(airportIataCode)
                     .collectAsStateWithLifecycle(null)
                 FlightSearchScreen(
-                    allAirports = allAirports.value,
                     innerPadding = innerPadding,
+                    allAirports = allAirports.value,
                     currentAirport = currentAirport.value,
                     toggleFavorite = viewmodel::toggleFavorite,
                 )
@@ -157,45 +157,42 @@ fun FlightApp(
 
 }
 
+@Preview
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(
+        allAirports = List(5){index ->
+            Airport(
+                index,
+                "OPO",
+                "Inernational Aiport"
+                ,90
+            )
+        },
+        favoriteRoutes = List(3){ index ->
+            FavoriteRoute(
+                index,
+                "OPO",
+                "OPO"
+            )
 
+        }
+    )
+}
 
-//NavHost(
-//navController = navController,
-//startDestination = FlightSearchScreens.HomeScreen.name,
-//) {
-//
-//    val airportIataCodeArgument = "airportIataCode"
-//    composable(
-//        route = FlightSearchScreens.FlightSearchScreen.name + "/{$airportIataCodeArgument}",
-//        arguments = listOf(navArgument(airportIataCodeArgument) {
-//            type = NavType.StringType
-//        })
-//    ) { backStackEntry ->
-//        val airportIataCode =
-//            backStackEntry.arguments?.getString(airportIataCodeArgument)
-//                ?: error("Airport ID cannot be null")
-//
-//        val airport by viewModel.getAirportByIataCode(airportIataCode)
-//            .collectAsState(null)
-//
-//        if (departureAirport == null) {
-//            Text(text = "Airport not found 123")
-//        } else {
-//            Column {
-//                Text(
-//                    text = "Flights from  ${departureAirport!!.iataCode} ",
-//                    fontWeight = FontWeight.Bold,
-//                    modifier = Modifier.padding(8.dp)
-//                )
-//                RouteSearchScreen(
-//                    onFavoriteClicked = { },
-//                    departureAirport = departureAirport!!,
-//                    arrivalAirport = airport!!,
-//                    isFavorite = true
-//                )
-//
-//            }
-//
-//        }
-//    }
-//}
+@Preview
+@Composable
+fun FlightSearchScreenPreview() {
+    FlightSearchScreen(
+        allAirports = List(5){index ->
+            Airport(
+                index,
+                "OPO",
+                "Inernational Aiport"
+                ,90
+            )
+        },
+        currentAirport = Airport(0, "OPO", "Inernational Aiport", 90),
+        toggleFavorite = { _, _ ->}
+    )
+}

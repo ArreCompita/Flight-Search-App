@@ -24,57 +24,60 @@ import com.example.flightsearchapp.data.Airport
 @Composable
 fun FlightSearchScreen(
     allAirports: List<Airport>,
-    innerPadding: PaddingValues,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     currentAirport: Airport?,
     toggleFavorite: (String, String) -> Unit,
 ) {
 
-        Column(
-            verticalArrangement = Arrangement.Top,
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primaryContainer),
+    Column(
+        verticalArrangement = Arrangement.Top,
+        modifier = Modifier
+            .padding(innerPadding)
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primaryContainer),
 
+        ) {
+        if (currentAirport == null) {
+            Text(
+                text = "Cargando aeropuertos... // aropuerto no encontrado",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(8.dp)
+            )
+
+        } else {
+
+            Text(
+                text = "Flights from ${currentAirport.iataCode}",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(8.dp)
+            )
+            LazyColumn(
+                modifier = Modifier,
+                contentPadding = innerPadding
             ) {
-            if (currentAirport == null) {
-                Text(
-                    text = "FlightSearchScreen Departure airport null or Loading Airport ",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
-                )
-
-            } else {
-
-                Text(
-                    text = "Flights from ${currentAirport.iataCode}}",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(8.dp)
-                )
-                LazyColumn(
-                    modifier = Modifier,
-                    contentPadding = innerPadding
-                ){
-                    items(
-                        items = allAirports,
-                        key = { airport -> airport.id }
-                    ) { airport ->
-                        RouteSearchScreen(
-                            onFavoriteClicked = { toggleFavorite(currentAirport.iataCode, airport.iataCode) },
-                            contentPadding = innerPadding,
-                            departureAirport = currentAirport,
-                            arrivalAirport = airport,
-                            isFavorite = true
-                        )
-                    }
-
+                items(
+                    items = allAirports,
+                    key = { airport -> airport.id }
+                ) { airport ->
+                    RouteSearchScreen(
+                        onFavoriteClicked = {
+                            toggleFavorite(
+                                currentAirport.iataCode,
+                                airport.iataCode
+                            )
+                        },
+                        contentPadding = innerPadding,
+                        departureAirport = currentAirport,
+                        arrivalAirport = airport,
+                        isFavorite = true
+                    )
                 }
 
             }
 
         }
 
-
+    }
 
 }
 
@@ -106,86 +109,6 @@ fun RouteSearchScreen(
 
     }
 }
-
-//@Composable
-//fun FlightSearchDetailsScreen(
-//    modifier: Modifier = Modifier,
-//    onFavoriteClicked: (() -> Unit),
-//    contentPadding: PaddingValues = PaddingValues(0.dp),
-//    departureAirport: Airport,
-//    arrivalAirport: Airport,
-//    isFavorite: Boolean
-//
-//){
-//    val layOutDirection = LocalLayoutDirection.current
-//    Column(
-//        modifier = Modifier.padding(
-//            start = contentPadding.calculateStartPadding(layOutDirection),
-//            end = contentPadding.calculateStartPadding(layOutDirection)
-//        )
-//    ) {
-//
-//        FlightDetailsCard(
-//            modifier = modifier,
-//            arrivalAirport = arrivalAirport,
-//            departureAirport = departureAirport,
-//            contentPadding = contentPadding,
-//            onFavoriteClicked = onFavoriteClicked,
-//            isFavorite = isFavorite
-//        )
-//
-//    }
-//
-//
-//}
-
-
-//@Composable
-//fun FlightSearchDetails (
-//    modifier: Modifier = Modifier,
-//    arrivalAirports: List<Airport>,
-//    departureAirport: Airport ,
-//    contentPadding: PaddingValues = PaddingValues(0.dp),
-//    onFavoriteClicked: ((String, String) -> Unit),
-//    isFavorite: Boolean
-//) {
-//    LazyColumn(
-//        modifier = modifier,
-//        contentPadding = contentPadding
-//    ) {
-//        items(
-//            items = arrivalAirports,
-//            key = { airport -> airport.id }
-//        ) { airport ->
-//            Row(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(16.dp),
-//            horizontalArrangement = Arrangement.SpaceBetween
-//            ) {
-//                Column {
-//                    Row {
-//                        Text(text = departureAirport.iataCode)
-//                        Text(text = departureAirport.airportName)
-//                    }
-//                    Row {
-//                        Text(text = airport.iataCode)
-//                        Text(text = airport.airportName)
-//
-//                    }
-//                }
-//                FavoriteButton(
-//                    isFavorite = isFavorite,
-//                    onClick = {
-//                        onFavoriteClicked(departureAirport.iataCode.toString(), airport.iataCode.toString(),)
-//
-//                    }
-//                )
-//            }
-//        }
-//    }
-//}
-
 
 
 

@@ -186,12 +186,3 @@ class FlightSearchViewmodel(
     }
 }
 
-
-
-// data class HomeUiState(
-//    val searchQuery: String = "",
-//    val favoriteRoutes: List<FavoriteRoute> = emptyList(),
-//    val airports: List<Airport> = emptyList(),
-//    val searchResults: List<Airport> = emptyList(),
-//    val departureAirport: Airport? = null
-//)

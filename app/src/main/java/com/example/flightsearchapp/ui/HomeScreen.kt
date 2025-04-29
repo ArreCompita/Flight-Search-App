@@ -32,7 +32,7 @@ import com.example.flightsearchapp.data.FavoriteRoute
 @Composable
 fun HomeScreen(
     allAirports: List<Airport>,
-    innerPadding: PaddingValues,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     favoriteRoutes: List<FavoriteRoute>,
 ) {
 

@@ -41,14 +41,12 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.flightsearchapp.data.Airport
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightSearchTopBar(
     title: String,
-    navigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     canNavigateBack: Boolean,
@@ -94,9 +92,10 @@ fun FlightSearchTopBar(
         ), scrollBehavior = scrollBehavior
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
- fun TopAppBarSurface(
+fun TopAppBarSurface(
     modifier: Modifier = Modifier,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
     scrollBehavior: TopAppBarScrollBehavior? = null,
@@ -144,13 +143,14 @@ fun EmbeddedSearchBar(
                 onSearch = { onSearch },
                 expanded = isSearchActive,
                 onExpandedChange = onActiveChanged,
-                modifier = if (isSearchActive) {modifier.animateContentSize((spring(stiffness = Spring.StiffnessHigh)))}
-                    else {
-                        modifier
-                    .padding(start = 12.dp, top = 2.dp, end = 12.dp, bottom = 12.dp)
-                    .fillMaxWidth()
-                    .animateContentSize(spring(stiffness = Spring.StiffnessHigh))
-                         },
+                modifier = if (isSearchActive) {
+                    modifier.animateContentSize((spring(stiffness = Spring.StiffnessHigh)))
+                } else {
+                    modifier
+                        .padding(start = 12.dp, top = 2.dp, end = 12.dp, bottom = 12.dp)
+                        .fillMaxWidth()
+                        .animateContentSize(spring(stiffness = Spring.StiffnessHigh))
+                },
                 placeholder = { Text("Search by airport name or IATA code") },
                 leadingIcon = {
                     if (isSearchActive) {
@@ -259,7 +259,7 @@ fun EmbeddedSearchBar(
                     }
                 }
             }
-        } else{
+        } else {
             Text(text = "SEARCH QUERY EMPTY EMBEDDED BAR")
         }
 
