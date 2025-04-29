@@ -8,6 +8,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="white">#FFFFFFFF</color>
     <dimen name="padding_medium">16.dp</dimen>
+    <string name="HomeScreen_Title">Flight Search</string>
     <string name="app_name">Flight Search App</string>
     <string name="back">back</string>
     <string name="favorite">favorite</string>

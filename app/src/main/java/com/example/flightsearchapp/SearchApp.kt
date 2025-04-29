@@ -61,7 +61,7 @@ fun FlightSearchTopBar(
         modifier = modifier,
         navigationIcon = {
             if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
+                IconButton(onClick = onBackClicked) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(R.string.back)
@@ -133,7 +133,6 @@ fun EmbeddedSearchBar(
     onActiveChanged: (Boolean) -> Unit,
     searchQuery: String,
     searchResults: List<Airport>,
-    navController: NavController,
     onSearch: ((String) -> Unit)? = null,
     onBackClicked: () -> Unit
 ) {

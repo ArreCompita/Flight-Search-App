@@ -2,4 +2,5 @@
     <string name="app_name">Flight Search App</string>
     <string name="back">back</string>
     <string name="favorite">favorite</string>
+    <string name="HomeScreen_Title">Flight Search</string>
 </resources>

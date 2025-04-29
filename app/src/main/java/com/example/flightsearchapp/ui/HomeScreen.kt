@@ -1,6 +1,5 @@
 package com.example.flightsearchapp.ui
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,20 +17,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.flightsearchapp.EmbeddedSearchBar
-import com.example.flightsearchapp.FlightSearchTopBar
-import com.example.flightsearchapp.TopAppBarSurface
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
 
@@ -40,80 +31,12 @@ import com.example.flightsearchapp.data.FavoriteRoute
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onAirportSelected: (Airport) -> Unit,
-    navController: NavHostController = rememberNavController(),
     allAirports: List<Airport>,
-    searchResults: List<Airport>,
+    innerPadding: PaddingValues,
     favoriteRoutes: List<FavoriteRoute>,
-    isSearchActive: Boolean,
-    toggleSearchBarVisibility: (Boolean) -> Unit,
-    isSearchBarVisible: Boolean,
-    onActiveChanged: (Boolean) -> Unit,
-    onSearchQueryChanged: (String) -> Unit,
-    onSearchQuery: (String) -> Unit,
-    searchQuery: String,
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-
-    Scaffold(
-        modifier = Modifier,
-        topBar = {
-            Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
-                AnimatedVisibility(
-                    visible = !isSearchActive,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    FlightSearchTopBar(
-                        title = "HomeScreen",
-                        navigateUp = { navController.navigateUp() },
-                        scrollBehavior = scrollBehavior,
-                        canNavigateBack = false,
-                        onBackClicked = { toggleSearchBarVisibility(false) },
-                        isSearchBarVisible = isSearchBarVisible,
-                        onSearchIconClicked = {
-                            toggleSearchBarVisibility(true)
-                            onActiveChanged(true)
-                        }
-                    )
-                }
 
 
-                AnimatedVisibility(
-                    visible = isSearchBarVisible,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    TopAppBarSurface(
-                        scrollBehavior = scrollBehavior
-                    ) {
-                        EmbeddedSearchBar(
-                            searchResults = searchResults,
-                            onBackClicked = { toggleSearchBarVisibility(false) },
-                            navController = navController,
-                            searchQuery = searchQuery,
-                            onQueryChanged = {
-                                onSearchQueryChanged(it)
-                            },
-                            onSearch = {
-                                onSearchQuery(searchQuery)
-
-
-                            }, isSearchActive = isSearchActive,
-                            onActiveChanged = { onActiveChanged(it) },
-                            onAirportClick = {
-                                onActiveChanged( false)
-                                toggleSearchBarVisibility(false)
-                                onAirportSelected(it)
-
-
-                            }
-                        )
-
-                    }
-                }
-
-            }
-        }
-    ) { innerPadding ->
             Column(
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier
@@ -168,7 +91,7 @@ fun HomeScreen(
 
             }
 
-    }
+
 }
 
 
