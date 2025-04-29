@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
 import androidx.compose.material3.Icon
@@ -28,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -139,46 +142,77 @@ fun FlightDetailsCard(
     onFavoriteClicked: () -> Unit,
     isFavorite: Boolean
 ) {
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    Card(
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(2.dp)
     ) {
-        Column(
-            modifier = Modifier.weight(1f, true)
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Row {
-                Text(
-                    text = departureAirport.iataCode,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(text = departureAirport.airportName,
-                    style = MaterialTheme.typography.bodyMedium,)
-            }
-            Row {
-                Text(
-                    text = arrivalAirport.iataCode,
-                    fontWeight = FontWeight.Bold,
-                    style = MaterialTheme.typography.titleMedium)
-                Text(
-                    text = arrivalAirport.airportName,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
 
+            Column(
+                modifier = Modifier
+                    .weight(1f, true)
+                    .padding(end = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = "Departure Airport",
+                    style = MaterialTheme.typography.labelMedium,
+                    textDecoration = TextDecoration.Underline
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+
+                    Text(
+                        text = departureAirport.iataCode,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = departureAirport.airportName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Text(
+                    text = "Arrival Airport",
+                    style = MaterialTheme.typography.labelMedium,
+                    textDecoration = TextDecoration.Underline
+                )
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+
+                    Text(
+                        text = arrivalAirport.iataCode,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = arrivalAirport.airportName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                }
             }
+            FavoriteButton(
+                modifier = Modifier.size(36.dp),
+                isFavorite = isFavorite,
+                onClick = {
+                    onFavoriteClicked
+                }
+            )
         }
-        FavoriteButton(
-            modifier = Modifier.size(36.dp),
-            isFavorite = isFavorite,
-            onClick = {
-                onFavoriteClicked
-            }
-        )
     }
 }
 
