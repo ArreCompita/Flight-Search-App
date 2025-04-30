@@ -12,11 +12,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconToggleButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -188,76 +193,36 @@ fun FlightDetailsCard(
     isFavorite: Boolean
 ) {
     Card(
-        modifier = modifier,
-        elevation = CardDefaults.cardElevation(2.dp)
+        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(
             modifier = modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f, true)
-                    .padding(16.dp),
+                modifier = Modifier.weight(1f, true),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.depart_details_card),
-                    style = MaterialTheme.typography.labelMedium,
-                    textDecoration = TextDecoration.Underline
+                CardDetails(
+                    label = "Arrival",
+                    iataCode = arrivalAirport.iataCode,
+                    airportName = arrivalAirport.airportName
                 )
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Text(
-                        text = departureAirport.iataCode,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Spacer(modifier = Modifier.padding(2.dp))
-                    Text(
-                        text = departureAirport.airportName,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Text(
-                    text = stringResource(R.string.arrive_details_card),
-                    style = MaterialTheme.typography.labelMedium,
-                    textDecoration = TextDecoration.Underline
+                CardDetails(
+                    label = "Departure",
+                    iataCode = departureAirport.iataCode,
+                    airportName = departureAirport.airportName
                 )
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-                    Text(
-                        text = arrivalAirport.iataCode,
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Spacer(modifier = Modifier.padding(2.dp))
-                    Text(
-                        text = arrivalAirport.airportName,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                }
             }
             FavoriteButton(
-                modifier = Modifier.size(36.dp),
+                modifier = Modifier ,
                 isFavorite = isFavorite,
                 onClick = {
                     onFavoriteClicked
@@ -268,26 +233,59 @@ fun FlightDetailsCard(
 }
 
 @Composable
+fun CardDetails(
+    label: String,
+    iataCode: String,
+    airportName: String
+) {
+    Column {
+        Text(
+            text = label,
+            textDecoration = TextDecoration.Underline,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        )
+        {
+            Text(
+                text = iataCode,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = airportName,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
+            )
+
+        }
+    }
+}
+
+@Composable
 fun FavoriteButton(
     modifier: Modifier = Modifier,
     isFavorite: Boolean,
     onClick: () -> Unit
 ){
-    FilledIconToggleButton(
+    IconToggleButton(
         modifier = modifier,
         checked = isFavorite,
         onCheckedChange = { onClick() },
 
         ) {
         Icon(
-            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+            modifier = Modifier.size(48.dp),
+            imageVector = if (isFavorite) Icons.Outlined.Star else Icons.Sharp.Star,
             contentDescription = null,
-            tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+            tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
         )
-
-
-
-
     }
 }
 

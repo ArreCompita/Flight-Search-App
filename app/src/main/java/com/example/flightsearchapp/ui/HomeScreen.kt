@@ -3,7 +3,6 @@ package com.example.flightsearchapp.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -95,7 +94,7 @@ fun HomeScreenDetailsList(
             }
 
             FlightDetailsCard(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier,
                 arrivalAirport = arrivalAirport!!,
                 departureAirport = departureAirport!!,
                 onFavoriteClicked = onFavoriteClicked,
