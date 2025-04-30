@@ -204,6 +204,7 @@ mipmap ic_launcher_round
 string HomeScreen_Title
 string androidx_startup
 string app_name
+string arrive_details_card
 string back
 string call_notification_answer_action
 string call_notification_answer_video_action
@@ -216,6 +217,7 @@ string close_drawer
 string close_sheet
 string default_error_message
 string default_popup_window_title
+string depart_details_card
 string dropdown_menu
 string favorite
 string in_progress

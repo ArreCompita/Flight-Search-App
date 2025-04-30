@@ -14,7 +14,9 @@ mipmap ic_launcher
 mipmap ic_launcher_round
 string HomeScreen_Title
 string app_name
+string arrive_details_card
 string back
+string depart_details_card
 string favorite
 style Theme.FlightSearchApp
 xml backup_rules

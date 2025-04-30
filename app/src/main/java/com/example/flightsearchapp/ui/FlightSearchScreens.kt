@@ -18,8 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flightsearchapp.data.Airport
+import com.example.flightsearchapp.ui.navigation.FlightDetailsCard
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -122,5 +124,20 @@ fun RouteSearchScreen(
     }
 }
 
-
+@Preview
+@Composable
+fun FlightSearchScreenPreview() {
+    FlightSearchScreen(
+        allAirports = List(5){index ->
+            Airport(
+                index,
+                "OPO",
+                "Inernational Aiport"
+                ,90
+            )
+        },
+        currentAirport = Airport(0, "OPO", "Inernational Aiport", 90),
+        toggleFavorite = { _, _ ->}
+    )
+}
 

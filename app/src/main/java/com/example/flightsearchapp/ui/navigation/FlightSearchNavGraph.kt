@@ -3,15 +3,32 @@ package com.example.flightsearchapp.ui.navigation
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconToggleButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -30,6 +47,7 @@ import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.ui.FlightSearchScreen
 import com.example.flightsearchapp.ui.FlightSearchViewmodel
 import com.example.flightsearchapp.ui.HomeScreen
+import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 
 enum class Destination {
     Home,
@@ -157,6 +175,138 @@ fun FlightApp(
 
 }
 
+
+@Composable
+fun FlightDetailsCard(
+    modifier: Modifier = Modifier,
+    arrivalAirport: Airport,
+    departureAirport: Airport,
+    onFavoriteClicked: () -> Unit,
+    isFavorite: Boolean
+) {
+    Card(
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            Column(
+                modifier = Modifier
+                    .weight(1f, true),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.depart_details_card),
+                    style = MaterialTheme.typography.labelMedium,
+                    textDecoration = TextDecoration.Underline
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+
+                    Text(
+                        text = departureAirport.iataCode,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = departureAirport.airportName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Text(
+                    text = stringResource(R.string.arrive_details_card),
+                    style = MaterialTheme.typography.labelMedium,
+                    textDecoration = TextDecoration.Underline
+                )
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+
+                    Text(
+                        text = arrivalAirport.iataCode,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Text(
+                        text = arrivalAirport.airportName,
+                        style = MaterialTheme.typography.bodyMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                }
+            }
+            FavoriteButton(
+                modifier = Modifier.size(36.dp),
+                isFavorite = isFavorite,
+                onClick = {
+                    onFavoriteClicked
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun FavoriteButton(
+    modifier: Modifier = Modifier,
+    isFavorite: Boolean,
+    onClick: () -> Unit
+){
+    FilledIconToggleButton(
+        modifier = modifier,
+        checked = isFavorite,
+        onCheckedChange = { onClick() },
+
+        ) {
+        Icon(
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+            contentDescription = null,
+            tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurface
+        )
+
+
+
+
+    }
+}
+
+@Preview
+@Composable
+fun FlightDetailsCardPreview() {
+    FlightSearchAppTheme {
+        FlightDetailsCard(
+            arrivalAirport = Airport(
+                id = 1,
+                airportName = "Sabiha Gokcen International Airport 1231412512343151125",
+                passengers = 12,
+                iataCode = "OPO"
+            ),
+
+            departureAirport = Airport(
+                id = 2,
+                airportName = "Sheremetyevo International Airport 12312412124124121241241",
+                passengers = 15,
+                iataCode = "SVO"
+            ),
+            onFavoriteClicked = {},
+            isFavorite = true
+        )
+    }
+}
+
+
+
 @Preview
 @Composable
 fun HomeScreenPreview() {
@@ -177,22 +327,5 @@ fun HomeScreenPreview() {
             )
 
         }
-    )
-}
-
-@Preview
-@Composable
-fun FlightSearchScreenPreview() {
-    FlightSearchScreen(
-        allAirports = List(5){index ->
-            Airport(
-                index,
-                "OPO",
-                "Inernational Aiport"
-                ,90
-            )
-        },
-        currentAirport = Airport(0, "OPO", "Inernational Aiport", 90),
-        toggleFavorite = { _, _ ->}
     )
 }

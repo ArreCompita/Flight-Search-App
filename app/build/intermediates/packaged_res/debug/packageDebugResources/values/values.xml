@@ -10,7 +10,9 @@
     <dimen name="padding_medium">16.dp</dimen>
     <string name="HomeScreen_Title">Flight Search</string>
     <string name="app_name">Flight Search App</string>
+    <string name="arrive_details_card">ARRIVE</string>
     <string name="back">back</string>
+    <string name="depart_details_card">DEPART</string>
     <string name="favorite">favorite</string>
     <style name="Theme.FlightSearchApp" parent="android:Theme.Material.Light.NoActionBar"/>
 </resources>

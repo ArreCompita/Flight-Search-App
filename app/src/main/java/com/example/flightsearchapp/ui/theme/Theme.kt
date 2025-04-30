@@ -106,11 +106,12 @@ fun FlightSearchAppTheme(
                 .isAppearanceLightStatusBars = darkTheme
         }
     }
-    
+
 
     MaterialTheme(
-      colorScheme = colorScheme,
-      typography = Typography,
-      content = content
+        shapes = Shapes,
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
     )
 }

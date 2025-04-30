@@ -3,4 +3,6 @@
     <string name="back">back</string>
     <string name="favorite">favorite</string>
     <string name="HomeScreen_Title">Flight Search</string>
+    <string name="depart_details_card">DEPART</string>
+    <string name="arrive_details_card">ARRIVE</string>
 </resources>
