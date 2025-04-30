@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -144,6 +146,7 @@ fun FlightApp(
             //Home Screen
             composable(Destination.Home.name) {
                 HomeScreen(
+                    modifier = Modifier.fillMaxSize(),
                     innerPadding = innerPadding,
                     allAirports = allAirports.value,
                     favoriteRoutes = favoriteRoutes.value,
@@ -163,7 +166,7 @@ fun FlightApp(
                     innerPadding = innerPadding,
                     allAirports = allAirports.value,
                     currentAirport = currentAirport.value,
-                    toggleFavorite = viewmodel::toggleFavorite,
+                    toggleFavorite = {  },
                 )
             }
 
@@ -190,16 +193,17 @@ fun FlightDetailsCard(
     ) {
         Row(
             modifier = modifier
-                .fillMaxWidth()
-                .padding(20.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
             Column(
                 modifier = Modifier
-                    .weight(1f, true),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                    .fillMaxWidth()
+                    .weight(1f, true)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
                     text = stringResource(R.string.depart_details_card),
@@ -209,6 +213,8 @@ fun FlightDetailsCard(
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Text(
@@ -216,6 +222,7 @@ fun FlightDetailsCard(
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
+                    Spacer(modifier = Modifier.padding(2.dp))
                     Text(
                         text = departureAirport.airportName,
                         style = MaterialTheme.typography.bodyMedium,
@@ -230,6 +237,8 @@ fun FlightDetailsCard(
                 )
                 Row (
                     modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
                     Text(
@@ -237,6 +246,7 @@ fun FlightDetailsCard(
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
+                    Spacer(modifier = Modifier.padding(2.dp))
                     Text(
                         text = arrivalAirport.airportName,
                         style = MaterialTheme.typography.bodyMedium,
@@ -310,22 +320,23 @@ fun FlightDetailsCardPreview() {
 @Preview
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(
-        allAirports = List(5){index ->
-            Airport(
-                index,
-                "OPO",
-                "Inernational Aiport"
-                ,90
-            )
-        },
-        favoriteRoutes = List(3){ index ->
-            FavoriteRoute(
-                index,
-                "OPO",
-                "OPO"
-            )
+    FlightSearchAppTheme {
+        HomeScreen(
+            allAirports = List(5) { index ->
+                Airport(
+                    index,
+                    "OPO",
+                    "Inernational Aiport", 90
+                )
+            },
+            favoriteRoutes = List(3) { index ->
+                FavoriteRoute(
+                    index,
+                    "OPO",
+                    "OPO"
+                )
 
-        }
-    )
+            }
+        )
+    }
 }

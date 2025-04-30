@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.ui.navigation.FlightDetailsCard
+import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,7 +31,7 @@ fun FlightSearchScreen(
     allAirports: List<Airport>,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     currentAirport: Airport?,
-    toggleFavorite: (String, String) -> Unit,
+    toggleFavorite: () -> Unit,
 ) {
 
     Column(
@@ -66,28 +67,14 @@ fun FlightSearchScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(8.dp)
             )
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                items(
-                    items = allAirports,
-                    key = { airport -> airport.id }
-                ) { airport ->
-                    RouteSearchScreen(
-                        onFavoriteClicked = {
-                            toggleFavorite(
-                                currentAirport.iataCode,
-                                airport.iataCode
-                            )
-                        },
-                        contentPadding = innerPadding,
-                        departureAirport = currentAirport,
-                        arrivalAirport = airport,
-                        isFavorite = true
-                    )
-                }
+            FlightSearchDetailList(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                allAirports = allAirports,
+                departureAirport = currentAirport,
+                onFavoriteClicked = toggleFavorite,
+                isFavorite = true
+            )
 
-            }
 
         }
 
@@ -97,47 +84,56 @@ fun FlightSearchScreen(
 
 
 @Composable
-fun RouteSearchScreen(
+fun FlightSearchDetailList(
     modifier: Modifier = Modifier,
+    allAirports: List<Airport>,
     onFavoriteClicked:  (() -> Unit),
     contentPadding: PaddingValues = PaddingValues(0.dp),
     departureAirport: Airport ,
-    arrivalAirport: Airport,
     isFavorite: Boolean
 ){
-    val layOutDirection = LocalLayoutDirection.current
-    Column(
-        modifier = Modifier.padding(
-            start = contentPadding.calculateStartPadding(layOutDirection),
-            end = contentPadding.calculateStartPadding(layOutDirection)
-        )
-    ) {
 
-        FlightDetailsCard(
-            modifier = modifier,
-            arrivalAirport = arrivalAirport,
-            departureAirport = departureAirport,
-            onFavoriteClicked = onFavoriteClicked,
-            isFavorite = isFavorite
-        )
+    LazyColumn(
+        modifier = Modifier,
+        contentPadding = contentPadding
+    ) {
+        items(
+            items = allAirports,
+            key = { airport -> airport.id }
+        ) { airport ->
+
+            FlightDetailsCard(
+                modifier = modifier.padding(8.dp),
+                arrivalAirport = airport,
+                departureAirport = departureAirport,
+                onFavoriteClicked = onFavoriteClicked,
+                isFavorite = isFavorite
+            )
+
+        }
 
     }
+
+
+
+
 }
 
 @Preview
 @Composable
 fun FlightSearchScreenPreview() {
-    FlightSearchScreen(
-        allAirports = List(5){index ->
-            Airport(
-                index,
-                "OPO",
-                "Inernational Aiport"
-                ,90
-            )
-        },
-        currentAirport = Airport(0, "OPO", "Inernational Aiport", 90),
-        toggleFavorite = { _, _ ->}
-    )
+    FlightSearchAppTheme {
+        FlightSearchScreen(
+            allAirports = List(5) { index ->
+                Airport(
+                    index,
+                    "OPO",
+                    "Inernational Aiport", 90
+                )
+            },
+            currentAirport = Airport(0, "OPO", "Inernational Aiport", 90),
+            toggleFavorite = { }
+        )
+    }
 }
 
