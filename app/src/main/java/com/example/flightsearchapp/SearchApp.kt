@@ -241,7 +241,6 @@ fun EmbeddedSearchBar(
                                     onClick = {
                                         onAirportClick(airport)
 
-
                                     }
                                 ),
                             horizontalArrangement = Arrangement.Start

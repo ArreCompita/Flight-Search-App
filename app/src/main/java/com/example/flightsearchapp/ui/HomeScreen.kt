@@ -1,5 +1,6 @@
 package com.example.flightsearchapp.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,8 +8,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -26,7 +32,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     allAirports: List<Airport>,
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    favoriteRoutes: List<FavoriteRoute>,
+    favoriteRoutes: List<FavoriteRoute>?,
+    onFavoriteClicked: (String, String) -> Unit,
 
     ) {
 
@@ -34,11 +41,12 @@ fun HomeScreen(
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier
+        modifier = modifier.background(color = MaterialTheme.colorScheme.background)
 
     ) {
-        if (favoriteRoutes.isEmpty()) {
-            Text(
+
+        when (favoriteRoutes?.isEmpty()) {
+            true -> Text(
                 text = "No favorite routes123",
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -46,28 +54,28 @@ fun HomeScreen(
                     .align(alignment = Alignment.Start)
             )
 
-        } else {
-
-            Text(
-                text = "favorite routes",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .align(alignment = Alignment.Start)
-            )
-            HomeScreenDetailsList(
+            false -> HomeScreenDetailsList(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 allAirports = allAirports,
                 innerPadding = innerPadding,
                 favoriteRoutes = favoriteRoutes,
-                onFavoriteClicked = {},
-                isFavorite = true
+                onFavoriteClicked = onFavoriteClicked
             )
+            else ->
+                Text(
+                    text = "Loading favorite routes...",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(alignment = Alignment.Start)
+                )
+
 
         }
 
     }
 }
+
 
 @Composable
 fun HomeScreenDetailsList(
@@ -75,8 +83,7 @@ fun HomeScreenDetailsList(
     allAirports: List<Airport>,
     innerPadding: PaddingValues,
     favoriteRoutes: List<FavoriteRoute>,
-    onFavoriteClicked: () -> Unit,
-    isFavorite: Boolean
+    onFavoriteClicked: (String, String) -> Unit,
 ){
     LazyColumn(
         modifier = modifier,
@@ -92,12 +99,16 @@ fun HomeScreenDetailsList(
             val arrivalAirport = allAirports.find { airport ->
                 airport.iataCode == favoriteRoute.destinationCode
             }
+            var isFavorite by remember { mutableStateOf(true) }
 
             FlightDetailsCard(
                 modifier = Modifier,
                 arrivalAirport = arrivalAirport!!,
                 departureAirport = departureAirport!!,
-                onFavoriteClicked = onFavoriteClicked,
+                onFavoriteClicked = {
+                    onFavoriteClicked(arrivalAirport.iataCode, departureAirport.iataCode)
+                    isFavorite = !isFavorite
+                },
                 isFavorite = isFavorite
 
             )
@@ -125,9 +136,7 @@ fun HomeScreenDetailsListPreview() {
                     "OPO",
                     "OPO"
                 )
-            },
-            onFavoriteClicked = {},
-            isFavorite = true
+            }, onFavoriteClicked = { _, _ -> },
 
 
         )
@@ -155,6 +164,6 @@ fun HomeScreenPreview() {
                 )
 
             }
-        )
+        ) { _, _ -> }
     }
 }

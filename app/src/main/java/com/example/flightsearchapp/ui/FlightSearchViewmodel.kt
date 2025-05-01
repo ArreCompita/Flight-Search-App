@@ -17,6 +17,8 @@ import com.example.flightsearchapp.data.UserPreferencesRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.flatMapLatest
@@ -46,17 +48,37 @@ class FlightSearchViewmodel(
 
     //Data flows
     val allAirports: Flow<List<Airport>> = retrieveAllAirports().flowOn(Dispatchers.IO)
-    val favoriteRoutes: Flow<List<FavoriteRoute>> = retrieveFavoriteRoutes().flowOn(Dispatchers.IO)
+
+    //Favorite Routes
+
+    private val _favoriteRoutes: MutableStateFlow<List<FavoriteRoute>> = MutableStateFlow(emptyList())
+    val favoriteRoutes: Flow<List<FavoriteRoute>> = _favoriteRoutes.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            Dao.getFavoriteRoutes().collect { favoriteRoutes ->
+                _favoriteRoutes.value = favoriteRoutes
+            }
+        }
+    }
+
+    fun isFavorite(iataDepartureCode: String, iataDestinationCode: String): Boolean {
+        return _favoriteRoutes.value.any {
+            it.departureCode == iataDepartureCode && it.destinationCode == iataDestinationCode
+        }
+    }
 
     //toggle favorite
 
-  fun toggleFavorite(departureCode: String, destinationCode: String) {
-      viewModelScope.launch(Dispatchers.IO) {
-          val existingRoute = retrieveFavoriteRoutes()
-
-      }
-  }
-
+    fun toggleFavorite(departureCode: String, destinationCode: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isFavorite(departureCode, destinationCode)) {
+                deleteFavoriteRoute(FavoriteRoute(0,departureCode, destinationCode))
+            } else {
+                insertFavoriteRoute(FavoriteRoute(0,departureCode, destinationCode))
+            }
+        }
+    }
 
     //Reactive Search
     val searchResultsForLongLists: Flow<List<Airport>> =
@@ -67,12 +89,6 @@ class FlightSearchViewmodel(
                 allAirports
             }
         }
-
-
-
-
-
-
 
     //SearchBar State
     var isSearchBarVisible by mutableStateOf(false)
@@ -158,15 +174,6 @@ class FlightSearchViewmodel(
 //            it.departureCode == iataDepartureCode && it.destinationCode == iataDestinationCode
 //        }
 //
-//    }
-//    fun toggleFavorite(departureCode: String, destinationCode: String) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            if (isFavorite(departureCode, destinationCode)) {
-//                deleteFavoriteRoute(FavoriteRoute(0,departureCode, destinationCode))
-//            } else {
-//                insertFavoriteRoute(FavoriteRoute(0,departureCode, destinationCode))
-//            }
-//        }
 //    }
 
 

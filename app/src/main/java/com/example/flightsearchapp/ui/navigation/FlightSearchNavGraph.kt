@@ -4,23 +4,19 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconToggleButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -40,11 +36,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.example.flightsearchapp.EmbeddedSearchBar
 import com.example.flightsearchapp.FlightSearchTopBar
 import com.example.flightsearchapp.R
@@ -67,15 +61,16 @@ fun FlightApp(
     viewmodel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory)
 ) {
     val navController = rememberNavController()
-    val allAirports = viewmodel.allAirports.collectAsStateWithLifecycle(emptyList())
-    val searchResults = viewmodel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
-    val favoriteRoutes = viewmodel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
+    val allAirports by viewmodel.allAirports.collectAsStateWithLifecycle(emptyList())
+    val searchResults by viewmodel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
+    val favoriteRoutes by viewmodel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
+
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior() //or EnterAlwaysScrollBehavior()
     val homeScreenTitle = stringResource(R.string.HomeScreen_Title)
-    var topBarTitle = rememberSaveable { mutableStateOf(homeScreenTitle) }
+    var topBarTitle by rememberSaveable { mutableStateOf(homeScreenTitle) }
     val onBackHandler = {
-        topBarTitle.value = homeScreenTitle
+        topBarTitle = homeScreenTitle
         viewmodel.onActiveChanged(false)
         viewmodel.toggleSearchBarVisibility(false)
         navController.navigateUp()
@@ -90,7 +85,7 @@ fun FlightApp(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     FlightSearchTopBar(
-                        title = topBarTitle.value,
+                        title = topBarTitle,
                         scrollBehavior = scrollBehavior,
                         canNavigateBack = navController.previousBackStackEntry != null,
                         onBackClicked = { onBackHandler() },
@@ -110,7 +105,7 @@ fun FlightApp(
                         scrollBehavior = scrollBehavior,
                     ) {
                         EmbeddedSearchBar(
-                            searchResults = searchResults.value,
+                            searchResults = searchResults,
                             onBackClicked = { onBackHandler() },
                             searchQuery = viewmodel.searchQuery,
                             onQueryChanged = {
@@ -124,10 +119,8 @@ fun FlightApp(
                             onActiveChanged = { viewmodel.onActiveChanged(it) },
                             onAirportClick = { airport ->
                                 viewmodel.selectAirport(airport)
-                                navController.navigate(
-                                    "${Destination.FlightSearch.name}/${airport.iataCode}"
-                                )
-                                topBarTitle.value = " FlightSearchScreen"
+                                navController.navigate(Destination.FlightSearch.name)
+                                topBarTitle = " FlightSearchScreen"
                                 viewmodel.onActiveChanged(false)
                                 viewmodel.toggleSearchBarVisibility(false)
 
@@ -152,26 +145,21 @@ fun FlightApp(
             composable(Destination.Home.name) {
                 HomeScreen(
                     modifier = Modifier.fillMaxSize(),
+                    allAirports = allAirports,
                     innerPadding = innerPadding,
-                    allAirports = allAirports.value,
-                    favoriteRoutes = favoriteRoutes.value,
+                    favoriteRoutes = favoriteRoutes,
+                    onFavoriteClicked = viewmodel::toggleFavorite
                 )
             }
-            val airportIataCodeArgument = "airportIataCode"
             composable(
-                route = Destination.FlightSearch.name + "/{$airportIataCodeArgument}",
-                arguments = listOf(navArgument(airportIataCodeArgument) {
-                    type = NavType.StringType
-                })
+                route = Destination.FlightSearch.name
             ) { backstackEntry ->
-                val airportIataCode = backstackEntry.arguments?.getString("airportIataCode") ?: ""
-                val currentAirport = viewmodel.getAirportByIataCode(airportIataCode)
-                    .collectAsStateWithLifecycle(null)
+
                 FlightSearchScreen(
+                    allAirports = allAirports,
                     innerPadding = innerPadding,
-                    allAirports = allAirports.value,
-                    currentAirport = currentAirport.value,
-                    toggleFavorite = {  },
+                    currentAirport = viewmodel.selectedAirport,
+                    toggleFavorite = viewmodel::toggleFavorite
                 )
             }
 
@@ -209,17 +197,19 @@ fun FlightDetailsCard(
                 modifier = Modifier.weight(1f, true),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                CardDetails(
-                    label = "Arrival",
-                    iataCode = arrivalAirport.iataCode,
-                    airportName = arrivalAirport.airportName
-                )
 
                 CardDetails(
                     label = "Departure",
                     iataCode = departureAirport.iataCode,
                     airportName = departureAirport.airportName
                 )
+
+                CardDetails(
+                    label = "Arrival",
+                    iataCode = arrivalAirport.iataCode,
+                    airportName = arrivalAirport.airportName
+                )
+
             }
             FavoriteButton(
                 modifier = Modifier ,
@@ -335,6 +325,6 @@ fun HomeScreenPreview() {
                 )
 
             }
-        )
+        ) { _, _ -> }
     }
 }
