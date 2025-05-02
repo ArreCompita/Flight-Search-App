@@ -56,7 +56,9 @@ class FlightSearchViewmodel(
 
     init {
         viewModelScope.launch {
-            Dao.getFavoriteRoutes().collect { favoriteRoutes ->
+            Dao.getFavoriteRoutes()
+                .flowOn(Dispatchers.IO)
+                .collect { favoriteRoutes ->
                 _favoriteRoutes.value = favoriteRoutes
             }
         }
@@ -72,10 +74,11 @@ class FlightSearchViewmodel(
 
     fun toggleFavorite(departureCode: String, destinationCode: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            val route = FavoriteRoute(0, departureCode, destinationCode)
             if (isFavorite(departureCode, destinationCode)) {
-                deleteFavoriteRoute(FavoriteRoute(0,departureCode, destinationCode))
+                deleteFavoriteRoute(route)
             } else {
-                insertFavoriteRoute(FavoriteRoute(0,departureCode, destinationCode))
+                insertFavoriteRoute(route)
             }
         }
     }
@@ -164,17 +167,6 @@ class FlightSearchViewmodel(
 //            started = SharingStarted.WhileSubscribed(5_000),
 //            initialValue = emptyList()
 //        )
-
-
-
-
-//
-//    fun isFavorite(iataDepartureCode: String, iataDestinationCode: String): Boolean {
-//        return favoriteRoutesFlow.value.any {
-//            it.departureCode == iataDepartureCode && it.destinationCode == iataDestinationCode
-//        }
-//
-//    }
 
 
 

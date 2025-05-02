@@ -155,6 +155,7 @@ fun FlightApp(
                 FlightSearchScreen(
                     allAirports = allAirports,
                     innerPadding = innerPadding,
+                    favoriteRoutes = favoriteRoutes,
                     currentAirport = viewmodel.selectedAirport,
                     toggleFavorite = viewmodel::toggleFavorite
                 )
@@ -211,9 +212,8 @@ fun FlightDetailsCard(
             FavoriteButton(
                 modifier = Modifier ,
                 isFavorite = isFavorite,
-                onClick = {
-                    onFavoriteClicked
-                }
+                onClick = onFavoriteClicked
+
             )
         }
     }

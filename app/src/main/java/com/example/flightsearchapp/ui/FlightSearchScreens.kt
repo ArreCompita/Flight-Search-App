@@ -12,16 +12,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flightsearchapp.data.Airport
+import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.ui.navigation.FlightDetailsCard
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 
@@ -31,6 +28,7 @@ import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 fun FlightSearchScreen(
     allAirports: List<Airport>,
     innerPadding: PaddingValues = PaddingValues(0.dp),
+    favoriteRoutes: List<FavoriteRoute>,
     currentAirport: Airport?,
     toggleFavorite: (String, String) -> Unit,
 ) {
@@ -64,7 +62,7 @@ fun FlightSearchScreen(
         } else {
 
             Text(
-                text = "Flights from ${currentAirport.iataCode}",
+                text = "Flights from ${ currentAirport.iataCode }",
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(8.dp)
             )
@@ -72,7 +70,8 @@ fun FlightSearchScreen(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 allAirports = allAirports,
                 onFavoriteClicked = toggleFavorite,
-                departureAirport = currentAirport
+                departureAirport = currentAirport,
+                favoriteRoutes = favoriteRoutes
             )
 
 
@@ -87,9 +86,10 @@ fun FlightSearchScreen(
 fun FlightSearchDetailList(
     modifier: Modifier = Modifier,
     allAirports: List<Airport>,
-    onFavoriteClicked:  ((String, String) -> Unit),
+    onFavoriteClicked: (String, String) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     departureAirport: Airport,
+    favoriteRoutes: List<FavoriteRoute>,
 ){
 
     LazyColumn(
@@ -100,7 +100,10 @@ fun FlightSearchDetailList(
             items = allAirports,
             key = { airport -> airport.id }
         ) { airport ->
-            var isFavorite by remember { mutableStateOf(false) }
+            var isFavorite = favoriteRoutes.any { favoriteRoute ->
+                favoriteRoute.departureCode == departureAirport.iataCode &&
+                        favoriteRoute.destinationCode == airport.iataCode
+            }
 
             FlightDetailsCard(
                 modifier = modifier,
@@ -108,7 +111,6 @@ fun FlightSearchDetailList(
                 departureAirport = departureAirport,
                 onFavoriteClicked = {
                     onFavoriteClicked(departureAirport.iataCode, airport.iataCode)
-                    isFavorite = !isFavorite
                                     },
                 isFavorite = isFavorite
             )
@@ -134,6 +136,7 @@ fun FlightSearchScreenPreview() {
                     "Inernational Aiport", 90
                 )
             },
+            favoriteRoutes = listOf(FavoriteRoute(0, "OPO", "OPO"), FavoriteRoute(0, "OPO", "AKA")),
             currentAirport = Airport(0, "OPO", "Inernational Aiport", 90)
         ) { _, _ -> }
     }
