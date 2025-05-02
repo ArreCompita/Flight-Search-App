@@ -1,6 +1,5 @@
 package com.example.flightsearchapp.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +27,6 @@ import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
     allAirports: List<Airport>,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     favoriteRoutes: List<FavoriteRoute>?,
@@ -39,9 +36,9 @@ fun HomeScreen(
 
 
     Column(
+        modifier = Modifier.padding(innerPadding),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.background(color = MaterialTheme.colorScheme.background)
 
     ) {
 

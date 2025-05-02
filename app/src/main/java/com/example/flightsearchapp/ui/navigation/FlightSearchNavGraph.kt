@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -70,7 +69,6 @@ fun FlightApp(
     val homeScreenTitle = stringResource(R.string.HomeScreen_Title)
     var topBarTitle by rememberSaveable { mutableStateOf(homeScreenTitle) }
     val onBackHandler = {
-        topBarTitle = homeScreenTitle
         viewmodel.onActiveChanged(false)
         viewmodel.toggleSearchBarVisibility(false)
         navController.navigateUp()
@@ -135,7 +133,6 @@ fun FlightApp(
         }
     ) { innerPadding ->
 
-
         NavHost(
             navController = navController,
             startDestination = Destination.Home.name
@@ -143,8 +140,8 @@ fun FlightApp(
         {
             //Home Screen
             composable(Destination.Home.name) {
+                topBarTitle = homeScreenTitle
                 HomeScreen(
-                    modifier = Modifier.fillMaxSize(),
                     allAirports = allAirports,
                     innerPadding = innerPadding,
                     favoriteRoutes = favoriteRoutes,
@@ -153,8 +150,8 @@ fun FlightApp(
             }
             composable(
                 route = Destination.FlightSearch.name
-            ) { backstackEntry ->
-
+            ) {
+                topBarTitle = "FlightSearchScreen"
                 FlightSearchScreen(
                     allAirports = allAirports,
                     innerPadding = innerPadding,

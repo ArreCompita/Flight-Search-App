@@ -23,12 +23,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FlightSearchAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ){
+
                     FlightApp()
-                }
 
             }
         }
