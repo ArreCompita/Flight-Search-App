@@ -35,12 +35,12 @@ public class AppDatabase_Impl : AppDatabase() {
 
   protected override fun createOpenDelegate(): RoomOpenDelegate {
     val _openDelegate: RoomOpenDelegate = object : RoomOpenDelegate(1,
-        "e15d4f0e4d842f918b95bb4bfb4e093f", "4d72be82282b28f71e84822a506154b3") {
+        "574d3ad56019e22f46027571157141e4", "2a8812acb58dde16bd325311d13c79ff") {
       public override fun createAllTables(connection: SQLiteConnection) {
         connection.execSQL("CREATE TABLE IF NOT EXISTS `airport` (`id` INTEGER NOT NULL, `iata_code` TEXT NOT NULL, `name` TEXT NOT NULL, `passengers` INTEGER NOT NULL, PRIMARY KEY(`id`))")
-        connection.execSQL("CREATE TABLE IF NOT EXISTS `favorite` (`id` INTEGER NOT NULL, `departure_code` TEXT NOT NULL, `destination_code` TEXT NOT NULL, PRIMARY KEY(`id`))")
+        connection.execSQL("CREATE TABLE IF NOT EXISTS `favorite` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `departure_code` TEXT NOT NULL, `destination_code` TEXT NOT NULL)")
         connection.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)")
-        connection.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e15d4f0e4d842f918b95bb4bfb4e093f')")
+        connection.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '574d3ad56019e22f46027571157141e4')")
       }
 
       public override fun dropAllTables(connection: SQLiteConnection) {

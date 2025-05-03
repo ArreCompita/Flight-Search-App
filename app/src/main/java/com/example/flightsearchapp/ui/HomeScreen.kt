@@ -3,6 +3,7 @@ package com.example.flightsearchapp.ui
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,15 +31,16 @@ fun HomeScreen(
     allAirports: List<Airport>,
     innerPadding: PaddingValues = PaddingValues(0.dp),
     favoriteRoutes: List<FavoriteRoute>?,
-    onFavoriteClicked: (String, String) -> Unit,
+    onFavoriteClicked: (String, String, Boolean) -> Unit,
 
     ) {
 
 
     Column(
-        modifier = Modifier.padding(innerPadding),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(innerPadding).fillMaxWidth(),
+
 
     ) {
 
@@ -54,7 +56,6 @@ fun HomeScreen(
             false -> HomeScreenDetailsList(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 allAirports = allAirports,
-                innerPadding = innerPadding,
                 favoriteRoutes = favoriteRoutes,
                 onFavoriteClicked = onFavoriteClicked
             )
@@ -78,9 +79,9 @@ fun HomeScreen(
 fun HomeScreenDetailsList(
     modifier: Modifier = Modifier,
     allAirports: List<Airport>,
-    innerPadding: PaddingValues,
+    innerPadding: PaddingValues = PaddingValues(0.dp),
     favoriteRoutes: List<FavoriteRoute>,
-    onFavoriteClicked: (String, String) -> Unit,
+    onFavoriteClicked: (String, String, Boolean) -> Unit,
 ){
     LazyColumn(
         modifier = modifier,
@@ -96,15 +97,17 @@ fun HomeScreenDetailsList(
             val arrivalAirport = allAirports.find { airport ->
                 airport.iataCode == favoriteRoute.destinationCode
             }
-            var isFavorite by remember { mutableStateOf(true) }
+            var isFavorite = favoriteRoutes.any { favoriteRoute ->
+                favoriteRoute.departureCode == departureAirport?.iataCode &&
+                        favoriteRoute.destinationCode == arrivalAirport?.iataCode
+            }
 
             FlightDetailsCard(
                 modifier = Modifier,
                 arrivalAirport = arrivalAirport!!,
                 departureAirport = departureAirport!!,
                 onFavoriteClicked = {
-                    onFavoriteClicked(arrivalAirport.iataCode, departureAirport.iataCode)
-                    isFavorite = !isFavorite
+                    onFavoriteClicked(departureAirport.iataCode, arrivalAirport.iataCode, isFavorite)
                 },
                 isFavorite = isFavorite
 
@@ -133,7 +136,7 @@ fun HomeScreenDetailsListPreview() {
                     "OPO",
                     "OPO"
                 )
-            }, onFavoriteClicked = { _, _ -> },
+            }, onFavoriteClicked = { _, _, _-> },
 
 
         )
@@ -161,6 +164,6 @@ fun HomeScreenPreview() {
                 )
 
             }
-        ) { _, _ -> }
+        ) { _, _,_-> }
     }
 }

@@ -34,7 +34,7 @@ public class FlightSearchDao_Impl(
     this.__db = __db
     this.__insertAdapterOfFavoriteRoute = object : EntityInsertAdapter<FavoriteRoute>() {
       protected override fun createQuery(): String =
-          "INSERT OR ABORT INTO `favorite` (`id`,`departure_code`,`destination_code`) VALUES (?,?,?)"
+          "INSERT OR ABORT INTO `favorite` (`id`,`departure_code`,`destination_code`) VALUES (nullif(?, 0),?,?)"
 
       protected override fun bind(statement: SQLiteStatement, entity: FavoriteRoute) {
         statement.bindLong(1, entity.id.toLong())

@@ -30,7 +30,7 @@ fun FlightSearchScreen(
     innerPadding: PaddingValues = PaddingValues(0.dp),
     favoriteRoutes: List<FavoriteRoute>,
     currentAirport: Airport?,
-    toggleFavorite: (String, String) -> Unit,
+    toggleFavorite: (String, String, Boolean) -> Unit,
 ) {
 
     Column(
@@ -86,7 +86,7 @@ fun FlightSearchScreen(
 fun FlightSearchDetailList(
     modifier: Modifier = Modifier,
     allAirports: List<Airport>,
-    onFavoriteClicked: (String, String) -> Unit,
+    onFavoriteClicked: (String, String, Boolean) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     departureAirport: Airport,
     favoriteRoutes: List<FavoriteRoute>,
@@ -110,7 +110,9 @@ fun FlightSearchDetailList(
                 arrivalAirport = airport,
                 departureAirport = departureAirport,
                 onFavoriteClicked = {
-                    onFavoriteClicked(departureAirport.iataCode, airport.iataCode)
+                    onFavoriteClicked(departureAirport.iataCode, airport.iataCode, isFavorite)
+                    isFavorite = !isFavorite
+
                                     },
                 isFavorite = isFavorite
             )
@@ -138,7 +140,7 @@ fun FlightSearchScreenPreview() {
             },
             favoriteRoutes = listOf(FavoriteRoute(0, "OPO", "OPO"), FavoriteRoute(0, "OPO", "AKA")),
             currentAirport = Airport(0, "OPO", "Inernational Aiport", 90)
-        ) { _, _ -> }
+        ) { _, _,_ -> }
     }
 }
 

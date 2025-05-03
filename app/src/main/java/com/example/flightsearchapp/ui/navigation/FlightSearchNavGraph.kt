@@ -322,6 +322,6 @@ fun HomeScreenPreview() {
                 )
 
             }
-        ) { _, _ -> }
+        ) { _, _,_ -> }
     }
 }
