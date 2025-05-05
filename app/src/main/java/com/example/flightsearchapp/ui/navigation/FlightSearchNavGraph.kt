@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,7 @@ import com.example.flightsearchapp.ui.FlightSearchScreen
 import com.example.flightsearchapp.ui.FlightSearchViewmodel
 import com.example.flightsearchapp.ui.HomeScreen
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
+import kotlinx.coroutines.launch
 
 enum class Destination {
     Home,
@@ -73,8 +75,8 @@ fun FlightApp(
         viewmodel.onActiveChanged(false)
         viewmodel.toggleSearchBarVisibility(false)
         navController.navigateUp()
-
     }
+    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = Modifier,
         topBar = {
@@ -108,7 +110,12 @@ fun FlightApp(
                             onBackClicked = { onBackHandler() },
                             searchQuery = viewmodel.searchQuery,
                             onQueryChanged = {
-                                viewmodel.onSearchQueryChanged(it)
+                                coroutineScope.launch {
+                                    viewmodel.onSearchQueryChanged(it)
+                                    viewmodel.saveSearchQuery(it)
+                                }
+
+
                             },
                             onSearch = {
                                 viewmodel.onSearchQuery(viewmodel.searchQuery)

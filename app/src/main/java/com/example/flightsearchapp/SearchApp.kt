@@ -259,7 +259,7 @@ fun EmbeddedSearchBar(
                 }
             }
         } else {
-            Text(text = "SEARCH QUERY EMPTY EMBEDDED BAR")
+            LazyColumn(){}
         }
 
     }

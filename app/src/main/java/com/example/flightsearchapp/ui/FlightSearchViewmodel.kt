@@ -43,6 +43,20 @@ class FlightSearchViewmodel(
 
     }
 
+    fun saveSearchQuery(searchQuery: String) {
+        viewModelScope.launch {
+           userPreferences.saveSearchQuery(searchQuery)
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            userPreferences.searchQuery.collect { searchQuery ->
+                this@FlightSearchViewmodel.searchQuery = searchQuery
+            }
+        }
+    }
+
     //Airport selected
 
     private var _selectedAirport: MutableStateFlow<Airport?> = MutableStateFlow(null)
@@ -77,9 +91,6 @@ class FlightSearchViewmodel(
     }
 
 
-    fun getFavoriteRoutesByCodes(depCode: String, destCode: String): Flow<FavoriteRoute?> {
-        return Dao.getFavoriteRouteByCodes(depCode, destCode)
-    }
 
     //toggle favorite
     fun toggleFavorite(departureCode: String, destinationCode: String ) {
@@ -136,19 +147,7 @@ class FlightSearchViewmodel(
         isSearchActive = newActiveValue
     }
 
-
-
-//
-//    //AutoCompletion State
-//    val storedSearchQuery: Flow<String> = userPreferences.searchQuery
-//
-//    val suggestions: Flow<String> =
-//        snapshotFlow { searchQuery }.combine(storedSearchQuery) { searchQuery, storedSearchQuery ->
-//            when {
-//                searchQuery.isNotEmpty() -> storedSearchQuery.filter { storedSearchQuery.contains(searchQuery,ignoreCase = true)  }
-//                else -> storedSearchQuery
-//            }
-//        }
+    
 
     fun onSearchQuery(searchQuery: String){
         viewModelScope.launch {
@@ -162,18 +161,16 @@ class FlightSearchViewmodel(
 
 
 
-
-
-
+    //Get Favorite Route by Iata Codes
+    fun getFavoriteRoutesByCodes(depCode: String, destCode: String): Flow<FavoriteRoute?> {
+        return Dao.getFavoriteRouteByCodes(depCode, destCode)
+    }
     fun searchAirport(searchQuery: String) : Flow<List<Airport>> = Dao.searchAirport(searchQuery)
-    //Get Airport by iataCode
-    fun getAirportByIataCode(iataCode: String) : Flow<Airport?> = Dao.getAirportByIataCode(iataCode)
     //Get All Airports
     fun retrieveAllAirports(): Flow<List<Airport>> = Dao.getAllAirports()
     //Get Favorite Routes
     fun retrieveFavoriteRoutes(): Flow<List<FavoriteRoute>> = Dao.getFavoriteRoutes()
     //Get Favorite Route by Iata Codes
-    fun retrieveFavoriteRouteByIataCodes(departCode: String, arriveCode: String): Flow<FavoriteRoute?> = Dao.getFavoriteRouteByIataCodes(departCode, arriveCode)
 
     //Insert and Delete Favorite Routes
     suspend fun insertFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.insertFavoriteRoute(favoriteRoute)
