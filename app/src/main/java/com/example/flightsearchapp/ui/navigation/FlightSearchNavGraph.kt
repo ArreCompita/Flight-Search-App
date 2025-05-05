@@ -61,8 +61,9 @@ fun FlightApp(
 ) {
     val navController = rememberNavController()
     val allAirports by viewmodel.allAirports.collectAsStateWithLifecycle(emptyList())
-    val searchResults by viewmodel.searchResultsForLongLists.collectAsStateWithLifecycle(emptyList())
+    val searchResults by viewmodel.searchResults.collectAsStateWithLifecycle(emptyList())
     val favoriteRoutes by viewmodel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
+    val currentAirport by viewmodel.selectedAirport.collectAsStateWithLifecycle()
 
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior() //or EnterAlwaysScrollBehavior()
@@ -156,8 +157,8 @@ fun FlightApp(
                     allAirports = allAirports,
                     innerPadding = innerPadding,
                     favoriteRoutes = favoriteRoutes,
-                    currentAirport = viewmodel.selectedAirport,
-                    toggleFavorite = viewmodel::toggleFavorite
+                    currentAirport = currentAirport,
+                    onFavoriteClicked = viewmodel::toggleFavorite
                 )
             }
 
@@ -179,7 +180,9 @@ fun FlightDetailsCard(
     isFavorite: Boolean
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp, pressedElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
@@ -322,6 +325,6 @@ fun HomeScreenPreview() {
                 )
 
             }
-        ) { _, _,_ -> }
+        ) { _, _ -> }
     }
 }

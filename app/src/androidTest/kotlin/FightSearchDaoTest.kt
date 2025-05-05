@@ -142,6 +142,14 @@ class FightSearchDaoTest {
         assertNull(airport)
     }
 
+    @Test
+    fun getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute() = runBlocking {
+        addFavoriteRoutes()
+        val favoriteRoute = flightSearchDao.getFavoriteRouteByCodes("CCC", "AAA").first()
+        assertEquals(favoriteRoute3, favoriteRoute)
+
+    }
+
 
 
 }
