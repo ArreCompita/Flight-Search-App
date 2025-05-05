@@ -1,6 +1,5 @@
 package com.example.flightsearchapp.`data`
 
-import androidx.room.EntityDeleteOrUpdateAdapter
 import androidx.room.EntityInsertAdapter
 import androidx.room.RoomDatabase
 import androidx.room.coroutines.createFlow
@@ -28,8 +27,6 @@ public class FlightSearchDao_Impl(
   private val __insertAdapterOfFavoriteRoute: EntityInsertAdapter<FavoriteRoute>
 
   private val __insertAdapterOfAirport: EntityInsertAdapter<Airport>
-
-  private val __deleteAdapterOfFavoriteRoute: EntityDeleteOrUpdateAdapter<FavoriteRoute>
   init {
     this.__db = __db
     this.__insertAdapterOfFavoriteRoute = object : EntityInsertAdapter<FavoriteRoute>() {
@@ -53,13 +50,6 @@ public class FlightSearchDao_Impl(
         statement.bindLong(4, entity.passengers.toLong())
       }
     }
-    this.__deleteAdapterOfFavoriteRoute = object : EntityDeleteOrUpdateAdapter<FavoriteRoute>() {
-      protected override fun createQuery(): String = "DELETE FROM `favorite` WHERE `id` = ?"
-
-      protected override fun bind(statement: SQLiteStatement, entity: FavoriteRoute) {
-        statement.bindLong(1, entity.id.toLong())
-      }
-    }
   }
 
   public override suspend fun insertFavoriteRoute(favoriteRoute: FavoriteRoute): Unit =
@@ -70,11 +60,6 @@ public class FlightSearchDao_Impl(
   public override suspend fun insertAirport(airport: Airport): Unit = performSuspending(__db, false,
       true) { _connection ->
     __insertAdapterOfAirport.insert(_connection, airport)
-  }
-
-  public override suspend fun deleteFavoriteRoute(favoriteRoute: FavoriteRoute): Unit =
-      performSuspending(__db, false, true) { _connection ->
-    __deleteAdapterOfFavoriteRoute.handle(_connection, favoriteRoute)
   }
 
   public override fun searchAirport(searchQuery: String): Flow<List<Airport>> {
@@ -271,6 +256,22 @@ public class FlightSearchDao_Impl(
           _result = null
         }
         _result
+      } finally {
+        _stmt.close()
+      }
+    }
+  }
+
+  public override suspend fun deleteFavoriteRoute(departureCode: String, destinationCode: String) {
+    val _sql: String = "DELETE FROM favorite WHERE departure_code = ? AND destination_code = ?"
+    return performSuspending(__db, false, true) { _connection ->
+      val _stmt: SQLiteStatement = _connection.prepare(_sql)
+      try {
+        var _argIndex: Int = 1
+        _stmt.bindText(_argIndex, departureCode)
+        _argIndex = 2
+        _stmt.bindText(_argIndex, destinationCode)
+        _stmt.step()
       } finally {
         _stmt.close()
       }

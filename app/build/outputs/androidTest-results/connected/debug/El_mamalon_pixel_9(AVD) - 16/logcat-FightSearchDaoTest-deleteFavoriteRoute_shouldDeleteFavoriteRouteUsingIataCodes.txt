@@ -1,0 +1,14 @@
+05-05 17:45:25.547  4456  4470 I TestRunner: started: deleteFavoriteRoute_shouldDeleteFavoriteRouteUsingIataCodes(FightSearchDaoTest)
+05-05 17:45:25.553  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a4ba98) locale list changing from [] to [en-US]
+05-05 17:45:25.561  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a46f98) locale list changing from [] to [en-US]
+05-05 17:45:25.583  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a4bdb8) locale list changing from [] to [en-US]
+05-05 17:45:25.594  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a46c78) locale list changing from [] to [en-US]
+05-05 17:45:25.603  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a51858) locale list changing from [] to [en-US]
+05-05 17:45:25.609  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a46638) locale list changing from [] to [en-US]
+05-05 17:45:25.619  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a49e78) locale list changing from [] to [en-US]
+05-05 17:45:25.625  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a4e978) locale list changing from [] to [en-US]
+05-05 17:45:25.628  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a50ef8) locale list changing from [] to [en-US]
+05-05 17:45:25.633  2391  2469 I .apps.wellbeing: AssetManager2(0x792640a4f5f8) locale list changing from [] to [en-US]
+05-05 17:45:25.640  4456  4470 D FlightSearchDaoTest: Database created successfully
+05-05 17:45:25.654  4456  4472 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
+05-05 17:45:25.767  4456  4470 I TestRunner: finished: deleteFavoriteRoute_shouldDeleteFavoriteRouteUsingIataCodes(FightSearchDaoTest)

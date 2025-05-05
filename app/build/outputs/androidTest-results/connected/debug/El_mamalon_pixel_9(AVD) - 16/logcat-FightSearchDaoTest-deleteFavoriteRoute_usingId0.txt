@@ -1,4 +1,0 @@
-05-05 08:53:23.784  8681  8695 I TestRunner: started: deleteFavoriteRoute_usingId0(FightSearchDaoTest)
-05-05 08:53:23.856  8681  8695 D FlightSearchDaoTest: Database created successfully
-05-05 08:53:23.899  8681  8697 E ashmem  : Pinning is deprecated since Android Q. Please use trim or other methods.
-05-05 08:53:24.024  8681  8695 I TestRunner: finished: deleteFavoriteRoute_usingId0(FightSearchDaoTest)

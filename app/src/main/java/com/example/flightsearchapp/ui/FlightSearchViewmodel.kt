@@ -176,7 +176,7 @@ class FlightSearchViewmodel(
 
     //Insert and Delete Favorite Routes
     suspend fun insertFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.insertFavoriteRoute(favoriteRoute)
-    suspend fun deleteFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.deleteFavoriteRoute(favoriteRoute)
+    suspend fun deleteFavoriteRoute(favoriteRoute: FavoriteRoute) = Dao.deleteFavoriteRoute(favoriteRoute.departureCode,favoriteRoute.destinationCode)
 
 
 

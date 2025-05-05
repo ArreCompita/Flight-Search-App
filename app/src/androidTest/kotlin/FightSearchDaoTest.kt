@@ -33,6 +33,7 @@ class FightSearchDaoTest {
     private val favoriteRoute2 = FavoriteRoute(2, "BBB", "CCC")
     private val favoriteRoute3 = FavoriteRoute(3, "CCC", "AAA")
 
+
     private suspend fun addOneFavoriteRoute() {
         flightSearchDao.insertFavoriteRoute(favoriteRoute0)
     }
@@ -41,8 +42,8 @@ class FightSearchDaoTest {
         flightSearchDao.insertFavoriteRoute(favoriteRoute2)
         flightSearchDao.insertFavoriteRoute(favoriteRoute3)
     }
-    private suspend fun deleteOneFavoriteRoute() {
-        flightSearchDao.deleteFavoriteRoute(favoriteRoute1)
+    private suspend fun deleteFavoriteRoute1() {
+        flightSearchDao.deleteFavoriteRoute( "AAA", "BBB")
         }
 
     @Before
@@ -84,27 +85,15 @@ class FightSearchDaoTest {
         addFavoriteRoutes()
         val favoriteRoutes = flightSearchDao.getFavoriteRouteByIataCodes("CCC", "AAA").first()
         assertEquals(favoriteRoute3, favoriteRoutes)
-
-
-
     }
 
     @Test
     @Throws(Exception::class)
-    fun deleteFavoriteRoute_shouldDeleteFavoriteRoute() = runBlocking {
-        addOneFavoriteRoute()
-        deleteOneFavoriteRoute()
+    fun deleteFavoriteRoute_shouldDeleteFavoriteRouteUsingIataCodes() = runBlocking {
+        addFavoriteRoutes()
+        deleteFavoriteRoute1()
         val favoriteRoutes = flightSearchDao.getFavoriteRoutes().first()
-        assertEquals(favoriteRoutes.size, 0)
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun deleteFavoriteRoute_usingId0() = runBlocking {
-    addFavoriteRoutes()
-        flightSearchDao.deleteFavoriteRoute(favoriteRoute0)
-    val favoriteRoutes = flightSearchDao.getFavoriteRoutes().first()
-    assertEquals(favoriteRoutes.size, 2)
+        assertEquals(favoriteRoutes.size, 2)
     }
 
     @Test
