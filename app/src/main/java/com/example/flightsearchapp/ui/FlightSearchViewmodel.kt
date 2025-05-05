@@ -147,7 +147,7 @@ class FlightSearchViewmodel(
         isSearchActive = newActiveValue
     }
 
-    
+
 
     fun onSearchQuery(searchQuery: String){
         viewModelScope.launch {

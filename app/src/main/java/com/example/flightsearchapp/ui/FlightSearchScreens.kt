@@ -66,10 +66,11 @@ fun FlightSearchScreen(
         } else {
 
             Text(
-                text = "Flights from ${ currentAirport.iataCode }",
+                text = "Flights from ${currentAirport.iataCode}",
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(8.dp)
-            )
+                modifier = Modifier
+                    .padding(horizontal = 24.dp, vertical = 4.dp )
+                    .align(alignment = Alignment.Start))
             FlightSearchDetailList(
                 modifier = Modifier.padding(horizontal = 8.dp),
                 allAirports = allAirports,

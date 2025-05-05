@@ -43,24 +43,30 @@ fun HomeScreen(
             .padding(innerPadding)
             .fillMaxWidth(),
 
-
-    ) {
+        ) {
 
         when (favoriteRoutes?.isEmpty()) {
             true -> Text(
-                text = "No favorite routes123",
+                text = "No Favorite Routes",
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .padding(8.dp)
-                    .align(alignment = Alignment.Start)
-            )
+                    .padding(horizontal = 24.dp, vertical = 4.dp )
+                    .align(alignment = Alignment.Start))
 
-            false -> HomeScreenDetailsList(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                allAirports = allAirports,
-                favoriteRoutes = favoriteRoutes,
-                onFavoriteClicked = onFavoriteClicked,
-            )
+            false -> {
+                Text(
+                    text = "Favorite Routes",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp, vertical = 4.dp )
+                        .align(alignment = Alignment.Start))
+                HomeScreenDetailsList(
+                    modifier = Modifier.padding(horizontal = 8.dp),
+                    allAirports = allAirports,
+                    favoriteRoutes = favoriteRoutes,
+                    onFavoriteClicked = onFavoriteClicked,
+                )
+            }
             else ->
                 Text(
                     text = "Loading favorite routes...",
@@ -85,10 +91,12 @@ fun HomeScreenDetailsList(
     favoriteRoutes: List<FavoriteRoute>,
     onFavoriteClicked: (String, String) -> Unit,
 ){
+
     LazyColumn(
         modifier = modifier,
         contentPadding = innerPadding
     ) {
+
         items(
             items = favoriteRoutes,
             key = { favoriteRoute -> favoriteRoute.id }

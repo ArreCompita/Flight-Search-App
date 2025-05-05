@@ -88,6 +88,8 @@ fun FlightSearchTopBar(
                 }
             }
         }, colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
             navigationIconContentColor = MaterialTheme.colorScheme.primary
         ), scrollBehavior = scrollBehavior
     )
@@ -259,7 +261,9 @@ fun EmbeddedSearchBar(
                 }
             }
         } else {
-            LazyColumn(){}
+            Text(
+                "SEARCHQUERY EMPTY"
+            )
         }
 
     }
