@@ -12,7 +12,7 @@ INFORMACIÓN: Configuring Android Instrumentation driver: android_instrumentatio
     }
     args_map {
       key: "class"
-      value: "FightSearchDaoTest#getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute"
+      value: "FightSearchDaoTest#deleteFavoriteRoute_usingId0"
     }
   }
 }
@@ -40,4 +40,4 @@ INFORMACIÓN: Copying files from device to host: /sdcard/Android/media/com.examp
 INFORMACIÓN: Stop logcat streaming.
 INFORMACIÓN: Uninstalling com.example.flightsearchapp for device emulator-5554.
 INFORMACIÓN: Uninstalling com.example.flightsearchapp.test for device emulator-5554.
-INFORMACIÓN: Execute .FightSearchDaoTest.getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute: PASSED
+INFORMACIÓN: Execute .FightSearchDaoTest.deleteFavoriteRoute_usingId0: PASSED

@@ -109,6 +109,7 @@ fun HomeScreenDetailsList(
                 departureAirport = departureAirport!!,
                 onFavoriteClicked = {
                     onFavoriteClicked(departureAirport.iataCode, arrivalAirport.iataCode)
+                    favorite = !favorite
                 },
                 isFavorite = favorite
 

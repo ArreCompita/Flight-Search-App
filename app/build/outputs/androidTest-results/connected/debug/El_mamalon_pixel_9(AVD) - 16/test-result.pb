@@ -1,12 +1,12 @@
 
 
-emulator-5554primaryº
-Ñ
-FightSearchDaoTest9getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute2∆¿·¿ÄØ«Î:«¿·¿Äïı*B
-emulator-5554primary"˝
+emulator-5554primaryÇ
+h
+FightSearchDaoTestdeleteFavoriteRoute_usingId02ã˘·¿Ä‰:ã˘·¿Ä˘ﬁB
+emulator-5554primary"‡
 
-logcatandroidÁ
-‰C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\outputs\androidTest-results\connected\debug\El_mamalon_pixel_9(AVD) - 16\logcat-.FightSearchDaoTest-getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute.txt"∏
+logcatandroid 
+«C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\outputs\androidTest-results\connected\debug\El_mamalon_pixel_9(AVD) - 16\logcat-.FightSearchDaoTest-deleteFavoriteRoute_usingId0.txt"∏
 
 device-infoandroidù
 öC:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\build\outputs\androidTest-results\connected\debug\El_mamalon_pixel_9(AVD) - 16\device-info.pb"π

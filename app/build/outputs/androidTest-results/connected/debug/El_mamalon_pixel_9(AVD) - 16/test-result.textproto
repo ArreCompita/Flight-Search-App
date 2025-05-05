@@ -1,5 +1,5 @@
 # proto-message: google.testing.platform.proto.api.core.TestSuiteResult
-# 2025-05-05T06:52:56.694856300Z:
+# 2025-05-05T08:53:32.729252100Z:
 test_suite_meta_data {
   scheduled_test_case_count: 1
   device {
@@ -11,14 +11,14 @@ test_status: PASSED
 test_result {
   test_case {
     test_class: "FightSearchDaoTest"
-    test_method: "getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute"
+    test_method: "deleteFavoriteRoute_usingId0"
     start_time {
-      seconds: 1746427974
-      nanos: 494000000
+      seconds: 1746435211
+      nanos: 480000000
     }
     end_time {
-      seconds: 1746427975
-      nanos: 90000000
+      seconds: 1746435211
+      nanos: 736000000
     }
     device {
       id: "emulator-5554"
@@ -32,7 +32,7 @@ test_result {
       namespace: "android"
     }
     source_path {
-      path: "C:\\Users\\Alfredo G\\AndroidStudioProjects\\FlightSearchApp\\app\\build\\outputs\\androidTest-results\\connected\\debug\\El_mamalon_pixel_9(AVD) - 16\\logcat-.FightSearchDaoTest-getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute.txt"
+      path: "C:\\Users\\Alfredo G\\AndroidStudioProjects\\FlightSearchApp\\app\\build\\outputs\\androidTest-results\\connected\\debug\\El_mamalon_pixel_9(AVD) - 16\\logcat-.FightSearchDaoTest-deleteFavoriteRoute_usingId0.txt"
     }
   }
   output_artifact {

@@ -100,6 +100,15 @@ class FightSearchDaoTest {
 
     @Test
     @Throws(Exception::class)
+    fun deleteFavoriteRoute_usingId0() = runBlocking {
+    addFavoriteRoutes()
+        flightSearchDao.deleteFavoriteRoute(favoriteRoute0)
+    val favoriteRoutes = flightSearchDao.getFavoriteRoutes().first()
+    assertEquals(favoriteRoutes.size, 2)
+    }
+
+    @Test
+    @Throws(Exception::class)
     fun getFavoriteRoutes_shouldReturnAllSavedFavoriteRoutes() = runBlocking {
         addFavoriteRoutes()
         val favoriteRoutes = flightSearchDao.getFavoriteRoutes().first()

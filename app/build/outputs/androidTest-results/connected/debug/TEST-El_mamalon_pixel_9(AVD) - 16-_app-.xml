@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name=".FightSearchDaoTest" tests="1" failures="0" errors="0" skipped="0" time="2.034" timestamp="2025-05-05T06:52:56" hostname="localhost">
+<testsuite name=".FightSearchDaoTest" tests="1" failures="0" errors="0" skipped="0" time="1.161" timestamp="2025-05-05T08:53:32" hostname="localhost">
   <properties>
     <property name="device" value="El_mamalon_pixel_9(AVD) - 16" />
     <property name="flavor" value="" />
     <property name="project" value=":app" />
   </properties>
-  <testcase name="getFavoriteRouteByCodes_ShouldReturnMatchingFavoriteRoute" classname=".FightSearchDaoTest" time="0.479" />
+  <testcase name="deleteFavoriteRoute_usingId0" classname=".FightSearchDaoTest" time="0.241" />
 </testsuite>
