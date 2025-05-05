@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.stateIn
@@ -91,32 +92,32 @@ class FlightSearchViewmodel(
             }
         }
     }
-
-     //Reactive search for Short lists
-    val searchResults: Flow<List<Airport>> =
-        snapshotFlow { searchQuery }.combine(allAirports) { searchQuery, airports ->
-            when {
-                searchQuery.isNotEmpty() -> airports.filter { airport ->
-                    airport.airportName.contains(searchQuery, ignoreCase = true)
-                            || airport.iataCode.contains(searchQuery, ignoreCase = true)
-                }
-                else -> airports
-            }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList()
-        )
 //
-//    //Reactive Search for Long Lists
-//    val searchResultsForLongLists: Flow<List<Airport>> =
-//        snapshotFlow { searchQuery }.flatMapLatest { searchQuery ->
-//            if (searchQuery.isNotEmpty()) {
-//                searchAirport(searchQuery)
-//            } else {
-//                allAirports
+//     //Reactive search for Short lists
+//    val searchResultsForShortLists: Flow<List<Airport>> =
+//        snapshotFlow { searchQuery }.combine(allAirports) { searchQuery, airports ->
+//            when {
+//                searchQuery.isNotEmpty() -> airports.filter { airport ->
+//                    airport.airportName.contains(searchQuery, ignoreCase = true)
+//                            || airport.iataCode.contains(searchQuery, ignoreCase = true)
+//                }
+//                else -> airports
 //            }
-//        }
+//        }.stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(5_000),
+//            initialValue = emptyList()
+//        )
+
+    //Reactive Search for Long Lists
+    val searchResults: Flow<List<Airport>> =
+        snapshotFlow { searchQuery }.flatMapLatest { searchQuery ->
+            if (searchQuery.isNotEmpty()) {
+                searchAirport(searchQuery)
+            } else {
+                allAirports
+            }
+        }
 
 
     //SearchBar State
@@ -195,7 +196,4 @@ class FlightSearchViewmodel(
         }
     }
 }
-
-data class HomeUiState(
-    val favoriteRoutesList: List<Set<Airport>> = emptyList())
 
