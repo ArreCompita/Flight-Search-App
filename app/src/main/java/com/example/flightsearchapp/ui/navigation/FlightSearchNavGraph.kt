@@ -79,6 +79,7 @@ fun FlightApp(
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         modifier = Modifier,
+        containerColor = MaterialTheme.colorScheme.onSurface,
         topBar = {
             Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
                 AnimatedVisibility(

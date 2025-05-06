@@ -55,8 +55,8 @@ fun FlightSearchTopBar(
     onSearchIconClicked: () -> Unit = {}
 ) {
     TopAppBar(
-        title = { Text(title) },
         modifier = modifier,
+        title = { Text(title) },
         navigationIcon = {
             if (canNavigateBack) {
                 IconButton(onClick = onBackClicked) {
@@ -87,11 +87,7 @@ fun FlightSearchTopBar(
 
                 }
             }
-        }, colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            navigationIconContentColor = MaterialTheme.colorScheme.primary
-        ), scrollBehavior = scrollBehavior
+        }, scrollBehavior = scrollBehavior
     )
 }
 
