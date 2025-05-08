@@ -2,6 +2,7 @@ package com.example.flightsearchapp.ui.navigation
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -59,6 +60,7 @@ enum class Destination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightApp(
+    modifier: Modifier = Modifier,
     viewmodel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory)
 ) {
     val navController = rememberNavController()
@@ -71,71 +73,44 @@ fun FlightApp(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior() //or EnterAlwaysScrollBehavior()
     val homeScreenTitle = stringResource(R.string.HomeScreen_Title)
     var topBarTitle by rememberSaveable { mutableStateOf(homeScreenTitle) }
-    val onBackHandler = {
-        viewmodel.onActiveChanged(false)
-        viewmodel.toggleSearchBarVisibility(false)
-        navController.navigateUp()
-    }
     val coroutineScope = rememberCoroutineScope()
+//    var isSearchBarVisible by rememberSaveable { mutableStateOf(false) }
     Scaffold(
-        modifier = Modifier,
-        containerColor = MaterialTheme.colorScheme.onSurface,
+        modifier = modifier,
         topBar = {
-            Column(verticalArrangement = Arrangement.spacedBy((-1).dp)) {
-                AnimatedVisibility(
-                    visible = !viewmodel.isSearchActive,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    FlightSearchTopBar(
-                        title = topBarTitle,
-                        scrollBehavior = scrollBehavior,
-                        canNavigateBack = navController.previousBackStackEntry != null,
-                        onBackClicked = { onBackHandler() },
-                        isSearchBarVisible = viewmodel.isSearchBarVisible,
-                        onSearchIconClicked = {
-                            viewmodel.toggleSearchBarVisibility(true)
-                            viewmodel.onActiveChanged(true)
-                        }
-                    )
-                }
+            Column(verticalArrangement = Arrangement.Top) {
 
-                AnimatedVisibility(
-                    visible = viewmodel.isSearchBarVisible,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                ) {
-                    TopAppBarSurface(
-                        scrollBehavior = scrollBehavior,
-                    ) {
+                FlightSearchTopBar(
+                    title = topBarTitle,
+                    scrollBehavior = scrollBehavior,
+                    onBackClicked = { navController.navigateUp() },
+                    onSearchIconClicked = { viewmodel.onActiveChanged(true) },
+                    canNavigateBack = navController.previousBackStackEntry != null
+                )
+                AnimatedVisibility(visible = viewmodel.isSearchActive) {
+
                         EmbeddedSearchBar(
-                            searchResults = searchResults,
-                            onBackClicked = { onBackHandler() },
                             searchQuery = viewmodel.searchQuery,
+                            searchResults = searchResults,
                             onQueryChanged = {
                                 coroutineScope.launch {
                                     viewmodel.onSearchQueryChanged(it)
                                     viewmodel.saveSearchQuery(it)
                                 }
-
-
                             },
-                            onSearch = {
-                                viewmodel.onSearchQuery(viewmodel.searchQuery)
-
-
-                            }, isSearchActive = viewmodel.isSearchActive,
+                            isSearchActive = viewmodel.isSearchActive,
                             onActiveChanged = { viewmodel.onActiveChanged(it) },
                             onAirportClick = { airport ->
                                 viewmodel.selectAirport(airport)
                                 navController.navigate(Destination.FlightSearch.name)
-                                topBarTitle = " FlightSearchScreen"
+                                topBarTitle = " Flight Routes"
                                 viewmodel.onActiveChanged(false)
-                                viewmodel.toggleSearchBarVisibility(false)
+                            },
+                        ) {
+                            viewmodel.onSearchQuery(viewmodel.searchQuery)
+                        }
 
 
-                            }
-                        )
-
-                    }
                 }
 
             }
@@ -221,7 +196,7 @@ fun FlightDetailsCard(
 
             }
             FavoriteButton(
-                modifier = Modifier ,
+                modifier = Modifier,
                 isFavorite = isFavorite,
                 onClick = onFavoriteClicked
 

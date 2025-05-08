@@ -132,16 +132,18 @@ class FlightSearchViewmodel(
 
 
     //SearchBar State
-    var isSearchBarVisible by mutableStateOf(false)
-        private set
+//    var isSearchBarVisible by mutableStateOf(false)
+//        private set
 
+
+//
+//    fun toggleSearchBarVisibility(
+//        isSearchBarVisible: Boolean ){
+//        this.isSearchBarVisible = isSearchBarVisible
+//    }
     var isSearchActive by mutableStateOf(false)
-        private set
+    private set
 
-    fun toggleSearchBarVisibility(
-        isSearchBarVisible: Boolean ){
-        this.isSearchBarVisible = isSearchBarVisible
-    }
 
     fun onActiveChanged(newActiveValue: Boolean) {
         isSearchActive = newActiveValue

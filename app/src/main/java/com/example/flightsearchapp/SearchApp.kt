@@ -8,6 +8,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.BottomAppBarDefaults.ContentPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,13 +37,18 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.flightsearchapp.data.Airport
+import com.example.flightsearchapp.ui.navigation.Destination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,11 +56,12 @@ fun FlightSearchTopBar(
     title: String,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    canNavigateBack: Boolean,
-    onBackClicked: () -> Unit = {},
-    isSearchBarVisible: Boolean,
-    onSearchIconClicked: () -> Unit = {}
-) {
+    onBackClicked: () -> Unit,
+    onSearchIconClicked: () -> Unit,
+    canNavigateBack: Boolean = false,
+    ) {
+
+
     TopAppBar(
         modifier = modifier,
         title = { Text(title) },
@@ -65,29 +73,23 @@ fun FlightSearchTopBar(
                         contentDescription = stringResource(R.string.back)
                     )
                 }
-            } else{
-                if (!isSearchBarVisible) {
-                    IconButton(
-                        onClick =  onSearchIconClicked
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = null
-                        )
-                    }
+            } else {
 
+                IconButton(
+                    onClick = onSearchIconClicked
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null
+                    )
                 }
-                else {
-                    IconButton(onClick = onBackClicked ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.back)
-                        )
-                    }
 
-                }
             }
-        }, scrollBehavior = scrollBehavior
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            navigationIconContentColor = MaterialTheme.colorScheme.primary
+        ),
+        scrollBehavior = scrollBehavior
     )
 }
 
@@ -131,7 +133,6 @@ fun EmbeddedSearchBar(
     searchQuery: String,
     searchResults: List<Airport>,
     onSearch: ((String) -> Unit)? = null,
-    onBackClicked: () -> Unit
 ) {
     SearchBar(
         inputField = {
@@ -141,22 +142,11 @@ fun EmbeddedSearchBar(
                 onSearch = { onSearch },
                 expanded = isSearchActive,
                 onExpandedChange = onActiveChanged,
-                modifier = if (isSearchActive) {
-                    modifier.animateContentSize((spring(stiffness = Spring.StiffnessHigh)))
-                } else {
-                    modifier
-                        .padding(start = 12.dp, top = 2.dp, end = 12.dp, bottom = 12.dp)
-                        .fillMaxWidth()
-                        .animateContentSize(spring(stiffness = Spring.StiffnessHigh))
-                },
                 placeholder = { Text("Search by airport name or IATA code") },
                 leadingIcon = {
                     if (isSearchActive) {
                         IconButton(
-                            onClick = {
-                                onActiveChanged(false)
-                                onBackClicked()
-                            },
+                            onClick = { onActiveChanged(false) },
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -192,20 +182,10 @@ fun EmbeddedSearchBar(
         },
         expanded = isSearchActive,
         onExpandedChange = onActiveChanged,
-        colors = SearchBarDefaults.colors(
-            containerColor = if (isSearchActive) {
-                MaterialTheme.colorScheme.background
-            } else {
-                MaterialTheme.colorScheme.surfaceContainerLow
-            },
-        ),
-        tonalElevation = 0.dp,
-        windowInsets = if (isSearchActive) {
-            SearchBarDefaults.windowInsets
-        } else {
-            WindowInsets(0.dp)
-        }
+
+
     ) {
+
         if (searchQuery.isNotEmpty()) {
 
             if (searchResults.isEmpty()) {
