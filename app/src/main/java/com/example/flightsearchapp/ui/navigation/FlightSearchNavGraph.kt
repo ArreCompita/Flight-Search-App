@@ -1,26 +1,35 @@
 package com.example.flightsearchapp.ui.navigation
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -40,17 +49,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.flightsearchapp.EmbeddedSearchBar
 import com.example.flightsearchapp.FlightSearchTopBar
 import com.example.flightsearchapp.R
-import com.example.flightsearchapp.TopAppBarSurface
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.ui.FlightSearchScreen
 import com.example.flightsearchapp.ui.FlightSearchViewmodel
 import com.example.flightsearchapp.ui.HomeScreen
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
-import kotlinx.coroutines.launch
 
 enum class Destination {
     Home,
@@ -60,7 +66,6 @@ enum class Destination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightApp(
-    modifier: Modifier = Modifier,
     viewmodel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory)
 ) {
     val navController = rememberNavController()
@@ -73,85 +78,172 @@ fun FlightApp(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior() //or EnterAlwaysScrollBehavior()
     val homeScreenTitle = stringResource(R.string.HomeScreen_Title)
     var topBarTitle by rememberSaveable { mutableStateOf(homeScreenTitle) }
-    val coroutineScope = rememberCoroutineScope()
-//    var isSearchBarVisible by rememberSaveable { mutableStateOf(false) }
     Scaffold(
-        modifier = modifier,
+        modifier = Modifier,
         topBar = {
-            Column(verticalArrangement = Arrangement.Top) {
+            FlightSearchTopBar(
+                title = topBarTitle,
+                scrollBehavior = scrollBehavior,
+                onBackClicked = { navController.popBackStack() },
+                canNavigateBack = navController.previousBackStackEntry != null
+            )
 
-                FlightSearchTopBar(
-                    title = topBarTitle,
-                    scrollBehavior = scrollBehavior,
-                    onBackClicked = { navController.navigateUp() },
-                    onSearchIconClicked = { viewmodel.onActiveChanged(true) },
-                    canNavigateBack = navController.previousBackStackEntry != null
-                )
-                AnimatedVisibility(visible = viewmodel.isSearchActive) {
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(innerPadding)
+        ) {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
 
-                        EmbeddedSearchBar(
-                            searchQuery = viewmodel.searchQuery,
-                            searchResults = searchResults,
-                            onQueryChanged = {
-                                coroutineScope.launch {
-                                    viewmodel.onSearchQueryChanged(it)
-                                    viewmodel.saveSearchQuery(it)
-                                }
-                            },
-                            isSearchActive = viewmodel.isSearchActive,
-                            onActiveChanged = { viewmodel.onActiveChanged(it) },
-                            onAirportClick = { airport ->
-                                viewmodel.selectAirport(airport)
-                                navController.navigate(Destination.FlightSearch.name)
-                                topBarTitle = " Flight Routes"
-                                viewmodel.onActiveChanged(false)
+                singleLine = true,
+                label = { Text(text = "Flight Search") },
+                placeholder = { Text(text = "Search by airport name or IATA code") },
+                value = viewmodel.searchQuery,
+                onValueChange = {viewmodel.onSearchQueryChanged(it)
+                                viewmodel.onActiveChanged(true)},
+                leadingIcon = {
+                    if (viewmodel.isSearchActive) {
+                        IconButton(
+                            onClick = { viewmodel.onActiveChanged(false) },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    } else {
+                        Icon(
+                            imageVector = Icons.Rounded.Search,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+
+
+                },
+                trailingIcon = if (viewmodel.searchQuery.isNotEmpty()) {
+                    {
+                        IconButton(
+                            onClick = {
+                                viewmodel.onSearchQueryChanged("")
                             },
                         ) {
-                            viewmodel.onSearchQuery(viewmodel.searchQuery)
+                            Icon(
+                                imageVector = Icons.Rounded.Close,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                } else {
+                    null
+                }
+            )
+
+
+            Box() {
+                if (viewmodel.searchQuery.isNotEmpty() && viewmodel.isSearchActive) {
+                    if (searchResults.isEmpty()) {
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        {
+                            Text(
+                                text = "No airports found",
+                                style = MaterialTheme.typography.titleSmall
+                            )
+                            Text(
+                                text = "Try adjusting your search",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    } else {
+                        if (viewmodel.isSearchActive) {
+                            LazyColumn(
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(searchResults) { airport ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp)
+                                            .clickable(
+                                                onClick = {
+                                                    viewmodel.selectAirport(airport)
+                                                    viewmodel.onSearchQueryChanged(airport.iataCode)
+                                                   if(navController.currentDestination?.route != Destination.FlightSearch.name) navController.navigate(Destination.FlightSearch.name)
+                                                    viewmodel.onActiveChanged(false)
+                                                }
+                                            ),
+                                        horizontalArrangement = Arrangement.Start
+                                    ) {
+                                        Text(
+                                            text = airport.iataCode,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier
+                                                .padding(end = 8.dp)
+                                        )
+                                        Text(text = airport.airportName)
+
+                                    }
+
+                                }
+
+
+                            }
+                        }
+                    }
+                } else {
+                    NavHost(
+                        navController = navController,
+                        startDestination = Destination.Home.name
+                    )
+                    {
+                        //Home Screen
+                        composable(Destination.Home.name) {
+                            topBarTitle = homeScreenTitle
+                            HomeScreen(
+                                allAirports = allAirports,
+                                favoriteRoutes = favoriteRoutes,
+                                onFavoriteClicked = viewmodel::toggleFavorite
+                            )
+                        }
+                        composable(
+                            route = Destination.FlightSearch.name
+                        ) {
+                            topBarTitle = "FlightSearchScreen"
+                            FlightSearchScreen(
+                                allAirports = allAirports,
+                                favoriteRoutes = favoriteRoutes,
+                                currentAirport = currentAirport,
+                                onFavoriteClicked = viewmodel::toggleFavorite
+                            )
                         }
 
 
+                    }
                 }
+            }
 
-            }
-        }
-    ) { innerPadding ->
 
-        NavHost(
-            navController = navController,
-            startDestination = Destination.Home.name
-        )
-        {
-            //Home Screen
-            composable(Destination.Home.name) {
-                topBarTitle = homeScreenTitle
-                HomeScreen(
-                    allAirports = allAirports,
-                    innerPadding = innerPadding,
-                    favoriteRoutes = favoriteRoutes,
-                    onFavoriteClicked = viewmodel::toggleFavorite
-                )
-            }
-            composable(
-                route = Destination.FlightSearch.name
-            ) {
-                topBarTitle = "FlightSearchScreen"
-                FlightSearchScreen(
-                    allAirports = allAirports,
-                    innerPadding = innerPadding,
-                    favoriteRoutes = favoriteRoutes,
-                    currentAirport = currentAirport,
-                    onFavoriteClicked = viewmodel::toggleFavorite
-                )
-            }
 
 
         }
-
 
     }
 
 }
+
+
 
 
 @Composable

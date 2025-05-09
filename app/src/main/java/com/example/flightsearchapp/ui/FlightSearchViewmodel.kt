@@ -10,11 +10,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
 import com.example.flightsearchapp.FlightSearchApplication
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.data.FlightSearchDao
 import com.example.flightsearchapp.data.UserPreferencesRepository
+import com.example.flightsearchapp.ui.navigation.Destination
+import com.example.flightsearchapp.ui.navigation.NavigationDestination
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow

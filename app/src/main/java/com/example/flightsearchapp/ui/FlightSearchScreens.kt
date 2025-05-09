@@ -31,7 +31,6 @@ import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 @Composable
 fun FlightSearchScreen(
     allAirports: List<Airport>,
-    innerPadding: PaddingValues = PaddingValues(0.dp),
     currentAirport: Airport?,
     onFavoriteClicked: (String, String) -> Unit,
     favoriteRoutes: List<FavoriteRoute>,
@@ -40,7 +39,6 @@ fun FlightSearchScreen(
     Column(
         verticalArrangement = Arrangement.Top,
         modifier = Modifier
-            .padding(innerPadding)
             .fillMaxWidth()
 
 
