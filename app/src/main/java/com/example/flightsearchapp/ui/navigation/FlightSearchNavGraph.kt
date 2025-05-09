@@ -38,6 +38,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -77,6 +78,7 @@ fun FlightApp(
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior() //or EnterAlwaysScrollBehavior()
     val homeScreenTitle = stringResource(R.string.HomeScreen_Title)
+    val focusManager = LocalFocusManager.current
     var topBarTitle by rememberSaveable { mutableStateOf(homeScreenTitle) }
     Scaffold(
         modifier = Modifier,
@@ -100,7 +102,6 @@ fun FlightApp(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-
                 singleLine = true,
                 label = { Text(text = "Flight Search") },
                 placeholder = { Text(text = "Search by airport name or IATA code") },
@@ -178,6 +179,7 @@ fun FlightApp(
                                             .padding(16.dp)
                                             .clickable(
                                                 onClick = {
+                                                    focusManager.clearFocus()
                                                     viewmodel.selectAirport(airport)
                                                     viewmodel.onSearchQueryChanged(airport.iataCode)
                                                    if(navController.currentDestination?.route != Destination.FlightSearch.name) navController.navigate(Destination.FlightSearch.name)
