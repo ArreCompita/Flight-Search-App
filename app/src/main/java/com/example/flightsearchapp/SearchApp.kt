@@ -56,6 +56,7 @@ fun FlightSearchTopBar(
 
 @Composable
 fun FlightSearchTextField(
+    modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     value: String,
@@ -66,7 +67,7 @@ fun FlightSearchTextField(
     onSearchQueryChanged: (String) -> Unit,
 ){
     TextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
         singleLine = true,

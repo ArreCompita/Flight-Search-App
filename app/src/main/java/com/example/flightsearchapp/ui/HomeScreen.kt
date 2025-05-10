@@ -1,14 +1,21 @@
 package com.example.flightsearchapp.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,13 +25,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.flightsearchapp.R
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.ui.navigation.FlightDetailsCard
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,12 +53,26 @@ fun HomeScreen(
         ) {
 
         when (favoriteRoutes?.isEmpty()) {
-            true -> Text(
-                text = "No Favorite Routes",
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp, vertical = 4.dp )
-                    .align(alignment = Alignment.Start))
+            true ->
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
+                ){
+                    Image(
+                        modifier = Modifier.size(84.dp),
+                        painter = painterResource(id = R.drawable.airplane),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "No Favorite Routes yet",
+                        style = MaterialTheme.typography.titleLarge,
+                        )
+
+
+                }
+
 
             false -> {
                 Text(

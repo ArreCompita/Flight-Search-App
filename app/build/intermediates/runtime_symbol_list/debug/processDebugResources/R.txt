@@ -79,6 +79,7 @@ int dimen notification_subtext_size 0x7f040013
 int dimen notification_top_pad 0x7f040014
 int dimen notification_top_pad_large_text 0x7f040015
 int dimen padding_medium 0x7f040016
+int drawable airplane 0x7f050016
 int drawable ic_call_answer 0x7f050001
 int drawable ic_call_answer_low 0x7f050002
 int drawable ic_call_answer_video 0x7f050003
