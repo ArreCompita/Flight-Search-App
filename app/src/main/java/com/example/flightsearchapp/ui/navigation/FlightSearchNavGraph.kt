@@ -13,31 +13,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -50,6 +45,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.flightsearchapp.FlightSearchTextField
 import com.example.flightsearchapp.FlightSearchTopBar
 import com.example.flightsearchapp.R
 import com.example.flightsearchapp.data.Airport
@@ -81,6 +77,7 @@ fun FlightApp(
     val focusManager = LocalFocusManager.current
     var topBarTitle by rememberSaveable { mutableStateOf(homeScreenTitle) }
     Scaffold(
+
         modifier = Modifier,
         topBar = {
             FlightSearchTopBar(
@@ -94,60 +91,21 @@ fun FlightApp(
     ) { innerPadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
+                .fillMaxWidth()
                 .padding(innerPadding)
         ) {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                singleLine = true,
+            FlightSearchTextField(
+                value = viewmodel.searchQuery,
+                onValueChange = {
+                    viewmodel.onSearchQueryChanged(it)
+                                viewmodel.onActiveChanged(true)},
+                isSearchActive = viewmodel.isSearchActive,
+                onActiveChanged = viewmodel::onActiveChanged,
                 label = { Text(text = "Flight Search") },
                 placeholder = { Text(text = "Search by airport name or IATA code") },
-                value = viewmodel.searchQuery,
-                onValueChange = {viewmodel.onSearchQueryChanged(it)
-                                viewmodel.onActiveChanged(true)},
-                leadingIcon = {
-                    if (viewmodel.isSearchActive) {
-                        IconButton(
-                            onClick = { viewmodel.onActiveChanged(false) },
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    } else {
-                        Icon(
-                            imageVector = Icons.Rounded.Search,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-
-
-                },
-                trailingIcon = if (viewmodel.searchQuery.isNotEmpty()) {
-                    {
-                        IconButton(
-                            onClick = {
-                                viewmodel.onSearchQueryChanged("")
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Close,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        }
-                    }
-                } else {
-                    null
-                }
+                searchQuery = viewmodel.searchQuery,
+                onSearchQueryChanged = viewmodel::onSearchQueryChanged
             )
-
 
             Box() {
                 if (viewmodel.searchQuery.isNotEmpty() && viewmodel.isSearchActive) {

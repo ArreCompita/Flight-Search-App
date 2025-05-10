@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.kotlinx.coroutines.core)
     implementation("androidx.navigation:navigation-compose:${rootProject.extra["nav_version"]}")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.8.1")
     //Room
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)

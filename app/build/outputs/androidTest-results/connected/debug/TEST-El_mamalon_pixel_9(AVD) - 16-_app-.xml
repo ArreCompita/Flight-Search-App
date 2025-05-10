@@ -1,9 +1,0 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<testsuite name=".FightSearchDaoTest" tests="1" failures="0" errors="0" skipped="0" time="2.306" timestamp="2025-05-05T17:45:15" hostname="localhost">
-  <properties>
-    <property name="device" value="El_mamalon_pixel_9(AVD) - 16" />
-    <property name="flavor" value="" />
-    <property name="project" value=":app" />
-  </properties>
-  <testcase name="deleteFavoriteRoute_shouldDeleteFavoriteRouteUsingIataCodes" classname=".FightSearchDaoTest" time="0.156" />
-</testsuite>
