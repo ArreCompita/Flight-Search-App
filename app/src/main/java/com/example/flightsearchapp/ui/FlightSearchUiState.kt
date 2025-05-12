@@ -1,7 +1,10 @@
 package com.example.flightsearchapp.ui
 
-//sealed class FlightSearchUiState {
-//    object Loading : FlightSearchUiState()
-//    data class Success(val flights: List<FlightsDetailsUiState>) : FlightSearchUiState()
-//    data class Error(val msg: String) : FlightSearchUiState()
-//}
+import com.example.flightsearchapp.data.Airport
+import com.example.flightsearchapp.data.FavoriteRoute
+
+data class FlightSearchUiState (
+        val allAirports: List<Airport> = emptyList(),
+        val favoriteRoutes: List<FavoriteRoute> = emptyList(),
+        val currentAirport: Airport? = null
+        )

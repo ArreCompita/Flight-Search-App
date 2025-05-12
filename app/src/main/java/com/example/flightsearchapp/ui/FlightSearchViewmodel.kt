@@ -62,6 +62,15 @@ class FlightSearchViewmodel(
         }
     }
 
+    //UiState
+    private val _fLightSearchUiState : MutableStateFlow<FlightSearchUiState> = MutableStateFlow(FlightSearchUiState())
+    val flightSearchUiState: StateFlow<FlightSearchUiState> = _fLightSearchUiState
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = FlightSearchUiState()
+        )
+
     //Airport selected
 
     private var _selectedAirport: MutableStateFlow<Airport?> = MutableStateFlow(null)
@@ -200,4 +209,3 @@ class FlightSearchViewmodel(
         }
     }
 }
-

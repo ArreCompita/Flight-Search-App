@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.sharp.Search
@@ -345,13 +347,15 @@ fun FavoriteButton(
 
         ) {
         Icon(
-            modifier = Modifier.size(48.dp),
-            imageVector = if (isFavorite) Icons.Outlined.Star else Icons.Sharp.Star,
+            modifier = Modifier.size(42.dp),
+            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
             contentDescription = null,
             tint = if (isFavorite) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
+
+
 
 @Preview
 @Composable
