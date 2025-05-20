@@ -1,6 +1,5 @@
 package com.example.flightsearchapp.ui.navigation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,10 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.sharp.Search
-import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,9 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -61,8 +55,10 @@ import com.example.flightsearchapp.R
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.ui.FlightSearchScreen
+import com.example.flightsearchapp.ui.HomeScreenUiState
 import com.example.flightsearchapp.ui.FlightSearchViewmodel
 import com.example.flightsearchapp.ui.HomeScreen
+import com.example.flightsearchapp.ui.UiEvent
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 
 enum class Destination {
@@ -75,18 +71,13 @@ enum class Destination {
 fun FlightApp(
     viewmodel: FlightSearchViewmodel = viewModel(factory = FlightSearchViewmodel.factory)
 ) {
+
     val navController = rememberNavController()
-    val allAirports by viewmodel.allAirports.collectAsStateWithLifecycle(emptyList())
-    val searchResults by viewmodel.searchResults.collectAsStateWithLifecycle(emptyList())
-    val favoriteRoutes by viewmodel.favoriteRoutes.collectAsStateWithLifecycle(emptyList())
-    val currentAirport by viewmodel.selectedAirport.collectAsStateWithLifecycle()
-
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior() //or EnterAlwaysScrollBehavior()
     val homeScreenTitle = stringResource(R.string.HomeScreen_Title)
     val focusManager = LocalFocusManager.current
     var topBarTitle by rememberSaveable { mutableStateOf(homeScreenTitle) }
-    var hasFocus by rememberSaveable { mutableStateOf(false) }
+    val uiState by viewmodel.flightSearchUiState.collectAsStateWithLifecycle()
     Scaffold(
 
         modifier = Modifier,
@@ -107,134 +98,63 @@ fun FlightApp(
                 .padding(innerPadding)
         ) {
             FlightSearchTextField(
-                modifier = Modifier.onFocusEvent(onFocusEvent = { hasFocus = it.hasFocus }),
-                value = viewmodel.searchQuery,
-                onValueChange = {
-                    viewmodel.onSearchQueryChanged(it)
-                                viewmodel.onActiveChanged(true)},
-                isSearchActive = viewmodel.isSearchActive,
-                onActiveChanged = viewmodel::onActiveChanged,
+                value = uiState.searchQuery,
+                onValueChange = { viewmodel.onEvent(event = UiEvent.OnSearchQueryChange(it)) },
                 label = { Text(text = "Flight Search") },
                 placeholder = { Text(text = "Search by airport name or IATA code") },
-                searchQuery = viewmodel.searchQuery,
-                onSearchQueryChanged = viewmodel::onSearchQueryChanged
+                searchQuery = uiState.searchQuery,
+                onSearchQueryChanged = { viewmodel.onEvent(event = UiEvent.OnSearchQueryChange(it))},
+                onSearch = { viewmodel.onEvent(event = UiEvent.OnSearchQuery(uiState.searchQuery))}
             )
 
             Box() {
-                if (viewmodel.searchQuery.isNotEmpty() && viewmodel.isSearchActive) {
-                    if (searchResults.isEmpty()) {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxSize()
+                when{
+                    uiState.searchQuery.isNotEmpty() && uiState.isSearchActive && uiState.searchResults.isNotEmpty() -> {
+                       SearchList(
+                           uiState = uiState,
+                           onClick = { airport ->
+                               viewmodel.onEvent(event = UiEvent.SelectAirport(airport))
+                               if(navController.currentDestination?.route != Destination.FlightSearch.name) navController.navigate(Destination.FlightSearch.name)
+                               focusManager.clearFocus()
+                           }
+                       )
+                    }
+
+                    uiState.searchQuery.isNotEmpty() && uiState.isSearchActive && uiState.searchResults.isEmpty() -> {
+                        NoResultsFound(uiState)
+                    }
+                    else -> {
+                        NavHost(
+                            navController = navController,
+                            startDestination = Destination.Home.name
                         )
                         {
-                            Column (
-                                modifier = Modifier.padding(48.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Icon(
-                                    modifier = Modifier.size(48.dp),
-                                    imageVector = Icons.Sharp.Search,
-                                    contentDescription = null,
-
-                                    )
-                                Spacer(modifier = Modifier.padding(4.dp))
-
-                                Text(
-                                    text = "No results for \"${viewmodel.searchQuery}\"",
-                                    style = TextStyle(
-                                        hyphens = Hyphens.Auto,
-                                        fontSize = MaterialTheme.typography.titleMedium.fontSize,
-
-                                    ),
-                                    overflow = TextOverflow.Visible,
-                                    fontWeight = FontWeight.Bold,
-                                    textAlign = TextAlign.Center
-                                )
-                                Text(
-                                    text = "Check the spelling or try a new search",
-                                    style = MaterialTheme.typography.bodySmall
+                            //Home Screen
+                            composable(Destination.Home.name) {
+                                topBarTitle = homeScreenTitle
+                                HomeScreen(
+                                    state = uiState,
+                                    onEvent = { viewmodel.onEvent(it) }
                                 )
                             }
-                        }
-                    } else {
-                        if (viewmodel.isSearchActive) {
-                            LazyColumn(
-                                verticalArrangement = Arrangement.spacedBy(14.dp)
+                            composable(
+                                route = Destination.FlightSearch.name
                             ) {
-                                items(searchResults) { airport ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(horizontal = 20.dp)
-                                            .clickable(
-                                                onClick = {
-                                                    focusManager.clearFocus()
-                                                    viewmodel.selectAirport(airport)
-                                                    viewmodel.onSearchQueryChanged(airport.iataCode)
-                                                   if(navController.currentDestination?.route != Destination.FlightSearch.name) navController.navigate(Destination.FlightSearch.name)
-                                                    viewmodel.onActiveChanged(false)
-                                                }
-                                            ),
-                                        horizontalArrangement = Arrangement.Start,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = airport.iataCode,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier
-
-                                        )
-                                        Spacer(modifier = Modifier.width(8.dp))
-                                        Text(
-                                            text = airport.airportName,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            maxLines = 1,
-                                            overflow = TextOverflow.Ellipsis
-                                        )
-
-                                    }
-
-                                }
-
-
+                                topBarTitle = "FlightSearchScreen"
+                                FlightSearchScreen(
+                                    state = uiState,
+                                    onEvent = { viewmodel.onEvent(it) }
+                                )
                             }
-                        }
-                    }
-                } else {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Destination.Home.name
-                    )
-                    {
-                        //Home Screen
-                        composable(Destination.Home.name) {
-                            topBarTitle = homeScreenTitle
-                            HomeScreen(
-                                allAirports = allAirports,
-                                favoriteRoutes = favoriteRoutes,
-                                onFavoriteClicked = viewmodel::toggleFavorite
-                            )
-                        }
-                        composable(
-                            route = Destination.FlightSearch.name
-                        ) {
-                            topBarTitle = "FlightSearchScreen"
-                            FlightSearchScreen(
-                                allAirports = allAirports,
-                                favoriteRoutes = favoriteRoutes,
-                                currentAirport = currentAirport,
-                                onFavoriteClicked = viewmodel::toggleFavorite
-                            )
-                        }
 
 
+                        }
+
                     }
+
                 }
-            }
 
+            }
 
 
 
@@ -244,6 +164,94 @@ fun FlightApp(
 
 }
 
+@Composable
+fun NoResultsFound(
+    uiState: HomeScreenUiState
+){
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    )
+    {
+        Column (
+            modifier = Modifier.padding(48.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                modifier = Modifier.size(48.dp),
+                imageVector = Icons.Sharp.Search,
+                contentDescription = null,
+
+                )
+            Spacer(modifier = Modifier.padding(4.dp))
+
+            Text(
+                text = "No results for \"${uiState.searchQuery}\"",
+                style = TextStyle(
+                    hyphens = Hyphens.Auto,
+                    fontSize = MaterialTheme.typography.titleMedium.fontSize,
+
+                    ),
+                overflow = TextOverflow.Visible,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = "Check the spelling or try a new search",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+@Composable
+fun SearchList(
+    onClick: (Airport) -> Unit,
+    uiState: HomeScreenUiState,
+
+){
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        items(uiState.searchResults) { airport ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .clickable(
+                        onClick = {
+                            onClick(airport)
+
+
+
+
+                        }
+                    ),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = airport.iataCode,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = airport.airportName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+            }
+
+        }
+
+    }
+
+}
 
 
 
@@ -251,7 +259,7 @@ fun FlightApp(
 fun FlightDetailsCard(
     modifier: Modifier = Modifier,
     arrivalAirport: Airport,
-    departureAirport: Airport,
+    departureAirport: Airport?,
     onFavoriteClicked: () -> Unit,
     isFavorite: Boolean
 ) {
@@ -277,7 +285,7 @@ fun FlightDetailsCard(
 
                 CardDetails(
                     label = "Departure",
-                    iataCode = departureAirport.iataCode,
+                    iataCode = departureAirport!!.iataCode,
                     airportName = departureAirport.airportName
                 )
 
@@ -387,22 +395,23 @@ fun FlightDetailsCardPreview() {
 @Composable
 fun HomeScreenPreview() {
     FlightSearchAppTheme {
-        HomeScreen(
-            allAirports = List(5) { index ->
-                Airport(
-                    index,
-                    "OPO",
-                    "Inernational Aiport", 90
-                )
-            },
-            favoriteRoutes = List(3) { index ->
+        HomeScreen(state = HomeScreenUiState(
+
+            allAirports =
+                (List(5) { index ->
+                    Airport(
+                        index,
+                        "OPO",
+                        "Inernational Aiport", 90)}
+                        ),
+            List(3) { index ->
                 FavoriteRoute(
                     index,
                     "OPO",
-                    "OPO"
-                )
-
-            }
-        ) { _, _ -> }
+                    "OPO")
+            })
+            ,
+            onEvent ={}
+        )
     }
 }

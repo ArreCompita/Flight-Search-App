@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-28:12
+ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:1-29:12
 MERGED from [androidx.navigation:navigation-common:2.8.4] C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\877c4fb7d14880b1d07758c9fc23459a\transformed\navigation-common-2.8.4\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-runtime:2.8.4] C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\8fbba16d49cc2a455d432df491ed01fd\transformed\navigation-runtime-2.8.4\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.8.4] C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\074353ed37307b599f960d60f89d8100\transformed\navigation-common-ktx-2.8.4\AndroidManifest.xml:2:1-7:12
@@ -75,8 +75,8 @@ MERGED from [androidx.arch.core:core-runtime:2.2.0] C:\Users\Alfredo G\.gradle\c
 	xmlns:android
 		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:2:11-69
 application
-ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:5:5-26:19
-INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:5:5-26:19
+ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:5:5-27:19
+INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:5:5-27:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.8.1] C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\13b57a2f3f1a775159190cc5a075b214\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.compose.ui:ui-tooling-android:1.8.1] C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\13b57a2f3f1a775159190cc5a075b214\transformed\ui-tooling-release\AndroidManifest.xml:22:5-26:19
 MERGED from [androidx.emoji2:emoji2:1.4.0] C:\Users\Alfredo G\.gradle\caches\8.11.1\transforms\f16b06889d52e90c034144dc9fd03dee\transformed\emoji2-1.4.0\AndroidManifest.xml:23:5-33:19
@@ -120,23 +120,25 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\Alfredo G\.gradle\
 	android:name
 		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:6:9-48
 activity#com.example.flightsearchapp.MainActivity
-ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:16:9-25:20
+ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:16:9-26:20
+	android:label
+		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:18:13-45
 	android:exported
-		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:18:13-36
+		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:19:13-36
 	android:theme
-		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:19:13-57
+		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:20:13-57
 	android:name
 		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:17:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:20:13-24:29
+ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:21:13-25:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:21:17-69
+ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:22:17-69
 	android:name
-		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:21:25-66
+		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:22:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:23:17-77
+ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:24:17-77
 	android:name
-		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:23:27-74
+		ADDED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml:24:27-74
 uses-sdk
 INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\Alfredo G\AndroidStudioProjects\FlightSearchApp\app\src\main\AndroidManifest.xml

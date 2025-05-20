@@ -30,10 +30,8 @@ import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightSearchScreen(
-    allAirports: List<Airport>,
-    currentAirport: Airport?,
-    onFavoriteClicked: (String, String) -> Unit,
-    favoriteRoutes: List<FavoriteRoute>,
+    state: HomeScreenUiState,
+    onEvent: (UiEvent) -> Unit
 ) {
 
     Column(
@@ -43,7 +41,7 @@ fun FlightSearchScreen(
 
 
         ) {
-        if (currentAirport == null) {
+        if (state.currentAirport == null) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -64,17 +62,16 @@ fun FlightSearchScreen(
         } else {
 
             Text(
-                text = "Flights from ${currentAirport.iataCode}",
+                text = "Flights from ${state.currentAirport.iataCode}",
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 4.dp )
                     .align(alignment = Alignment.Start))
             FlightSearchDetailList(
                 modifier = Modifier.padding(horizontal = 8.dp),
-                allAirports = allAirports,
-                onFavoriteClicked = onFavoriteClicked,
-                departureAirport = currentAirport,
-                favoriteRoutes = favoriteRoutes
+                state = state,
+                onEvent = onEvent,
+
             )
 
 
@@ -88,23 +85,23 @@ fun FlightSearchScreen(
 @Composable
 fun FlightSearchDetailList(
     modifier: Modifier = Modifier,
-    allAirports: List<Airport>,
-    onFavoriteClicked: (String, String) -> Unit,
+
+    state: HomeScreenUiState,
+    onEvent: (UiEvent) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    departureAirport: Airport,
-    favoriteRoutes: List<FavoriteRoute>,
-){
+
+    ){
 
     LazyColumn(
         modifier = Modifier,
         contentPadding = contentPadding
     ) {
         items(
-            items = allAirports,
+            items = state.allAirports,
             key = { airport -> airport.id }
         ) { arrivalAirport ->
-            val favoriteRoute = favoriteRoutes.find { favoriteRoute ->
-                favoriteRoute.departureCode == departureAirport.iataCode
+            val favoriteRoute = state.favoriteRoutes.find { favoriteRoute ->
+                favoriteRoute.departureCode == state.currentAirport?.iataCode
                         && favoriteRoute.destinationCode == arrivalAirport.iataCode
             }
 
@@ -113,9 +110,9 @@ fun FlightSearchDetailList(
                 FlightDetailsCard(
                     modifier = modifier,
                     arrivalAirport = arrivalAirport,
-                    departureAirport = departureAirport,
+                    departureAirport = state.currentAirport,
                     onFavoriteClicked = {
-                        onFavoriteClicked(departureAirport.iataCode, arrivalAirport.iataCode)
+                        onEvent( UiEvent.ToggleFavorite(state.currentAirport!!.iataCode, arrivalAirport.iataCode))
                         favorite = !favorite
 
                     },
@@ -137,23 +134,28 @@ fun FlightSearchDetailList(
 fun FlightSearchScreenPreview() {
     FlightSearchAppTheme {
         FlightSearchScreen(
-            allAirports = List(5) { index ->
+            state = HomeScreenUiState(
+                isError = false,
+                isLoading = false,
+                isLoaded = true,
+                allAirports =
+                (List(5) { index ->
                 Airport(
                     index,
                     "OPO",
-                    "Inernational Aiport", 90
-                )
-            },
-            currentAirport = Airport(0, "OPO", "Inernational Aiport", 90),
-            onFavoriteClicked = { _, _ -> },
-            favoriteRoutes = List(3) { index ->
-                FavoriteRoute(
-                    index,
-                    "OPO",
-                    "OPO"
-                )
-            }
+                    "Inernational Aiport", 90)}
+                    ),
+                List(3) { index ->
+                    FavoriteRoute(
+                        index,
+                        "OPO",
+                        "OPO")
+                }),
+            onEvent ={}
+
+
         )
+
     }
 }
 

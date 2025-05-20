@@ -5,6 +5,8 @@ import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -27,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 
 private enum class IconState{
@@ -73,10 +76,9 @@ fun FlightSearchTextField(
     placeholder: @Composable (() -> Unit)? = null,
     value: String,
     onValueChange: (String) -> Unit,
-    isSearchActive: Boolean,
-    onActiveChanged: (Boolean) -> Unit,
     searchQuery: String,
     onSearchQueryChanged: (String) -> Unit,
+    onSearch: () -> Unit
 ){
     TextField(
         modifier = modifier
@@ -88,24 +90,12 @@ fun FlightSearchTextField(
         value = value,
         onValueChange = onValueChange,
         leadingIcon = {
-            if (isSearchActive) {
-                IconButton(
-                    onClick = { onActiveChanged(false) },
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            } else {
+
                 Icon(
                     imageVector = Icons.Rounded.Search,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-            }
-
 
         },
         trailingIcon = if (searchQuery.isNotEmpty()) {
@@ -124,7 +114,12 @@ fun FlightSearchTextField(
             }
         } else {
             null
-        }
+        },
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+        keyboardActions = KeyboardActions(
+            onDone = { onSearch() }
+        )
+
     )
 
 }

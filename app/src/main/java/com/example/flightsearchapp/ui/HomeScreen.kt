@@ -1,7 +1,6 @@
 package com.example.flightsearchapp.ui
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,10 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,9 +36,8 @@ import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    allAirports: List<Airport>,
-    favoriteRoutes: List<FavoriteRoute>?,
-    onFavoriteClicked: (String, String) -> Unit,
+    state: HomeScreenUiState,
+    onEvent: (UiEvent) -> Unit,
     ) {
 
     Column(
@@ -52,7 +47,7 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-        when (favoriteRoutes?.isEmpty()) {
+        when (state.favoriteRoutes.isEmpty()) {
             true ->
                 Column(
                     verticalArrangement = Arrangement.Center,
@@ -83,9 +78,8 @@ fun HomeScreen(
                         .align(alignment = Alignment.Start))
                 HomeScreenDetailsList(
                     modifier = Modifier.padding(horizontal = 8.dp),
-                    allAirports = allAirports,
-                    favoriteRoutes = favoriteRoutes,
-                    onFavoriteClicked = onFavoriteClicked,
+                    state = state,
+                    onEvent = onEvent,
                 )
             }
             else ->
@@ -107,10 +101,9 @@ fun HomeScreen(
 @Composable
 fun HomeScreenDetailsList(
     modifier: Modifier = Modifier,
-    allAirports: List<Airport>,
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    favoriteRoutes: List<FavoriteRoute>,
-    onFavoriteClicked: (String, String) -> Unit,
+    state: HomeScreenUiState,
+    onEvent: (UiEvent) -> Unit
 ){
 
     LazyColumn(
@@ -119,13 +112,13 @@ fun HomeScreenDetailsList(
     ) {
 
         items(
-            items = favoriteRoutes,
+            items = state.favoriteRoutes,
             key = { favoriteRoute -> favoriteRoute.id }
         ) { favoriteRoute ->
-            val departureAirport = allAirports.find { airport ->
+            val departureAirport = state.allAirports.find { airport ->
                 airport.iataCode == favoriteRoute.departureCode
             }
-            val arrivalAirport = allAirports.find { airport ->
+            val arrivalAirport = state.allAirports.find { airport ->
                 airport.iataCode == favoriteRoute.destinationCode
             }
 
@@ -137,7 +130,7 @@ fun HomeScreenDetailsList(
                 arrivalAirport = arrivalAirport!!,
                 departureAirport = departureAirport!!,
                 onFavoriteClicked = {
-                    onFavoriteClicked(departureAirport.iataCode, arrivalAirport.iataCode)
+                    onEvent( UiEvent.ToggleFavorite(departureAirport.iataCode, arrivalAirport.iataCode))
                     favorite = !favorite
                 },
                 isFavorite = favorite
@@ -154,20 +147,23 @@ fun HomeScreenDetailsList(
 fun HomeScreenDetailsListPreview() {
     FlightSearchAppTheme {
         HomeScreenDetailsList(
-            allAirports = List(5) { index ->
-                Airport(
-                    index,
-                    "OPO",
-                    "Inernational Aiport", 90)}
+            state = HomeScreenUiState(
+
+                allAirports =
+                    (List(5) { index ->
+                        Airport(
+                            index,
+                            "OPO",
+                            "Inernational Aiport", 90)}
+                            ),
+                List(3) { index ->
+                    FavoriteRoute(
+                        index,
+                        "OPO",
+                        "OPO")
+                })
             ,
-            innerPadding = PaddingValues(0.dp),
-            favoriteRoutes = List(3) { index ->
-                FavoriteRoute(
-                    index,
-                    "OPO",
-                    "OPO"
-                )
-            }, onFavoriteClicked = { _, _ -> }
+            onEvent ={}
 
 
         )
@@ -180,21 +176,24 @@ fun HomeScreenDetailsListPreview() {
 fun HomeScreenPreview() {
     FlightSearchAppTheme {
         HomeScreen(
-            allAirports = List(5) { index ->
-                Airport(
-                    index,
-                    "OPO",
-                    "Inernational Aiport", 90
-                )
-            },
-            favoriteRoutes = List(3) { index ->
-                FavoriteRoute(
-                    index,
-                    "OPO",
-                    "OPO"
-                )
+            state = HomeScreenUiState(
+                allAirports =
+                    (List(5) { index ->
+                        Airport(
+                            index,
+                            "OPO",
+                            "Inernational Aiport", 90)}
+                            ),
+                List(3) { index ->
+                    FavoriteRoute(
+                        index,
+                        "OPO",
+                        "OPO")
+                })
+            ,
+            onEvent ={}
 
-            },
-        ) { _, _ -> }
+
+        )
     }
 }
