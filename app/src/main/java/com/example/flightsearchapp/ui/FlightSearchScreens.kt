@@ -23,14 +23,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
-import com.example.flightsearchapp.ui.navigation.FlightDetailsCard
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlightSearchScreen(
-    state: HomeScreenUiState,
+    state: AppUiState,
     onEvent: (UiEvent) -> Unit
 ) {
 
@@ -86,7 +85,7 @@ fun FlightSearchScreen(
 fun FlightSearchDetailList(
     modifier: Modifier = Modifier,
 
-    state: HomeScreenUiState,
+    state: AppUiState,
     onEvent: (UiEvent) -> Unit,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 
@@ -134,10 +133,7 @@ fun FlightSearchDetailList(
 fun FlightSearchScreenPreview() {
     FlightSearchAppTheme {
         FlightSearchScreen(
-            state = HomeScreenUiState(
-                isError = false,
-                isLoading = false,
-                isLoaded = true,
+            state = AppUiState(
                 allAirports =
                 (List(5) { index ->
                 Airport(

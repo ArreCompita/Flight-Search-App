@@ -1,13 +1,11 @@
 package com.example.flightsearchapp.ui
 
-import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.flightsearchapp.FlightSearchApplication
-import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
 import com.example.flightsearchapp.data.FlightSearchDao
 import com.example.flightsearchapp.data.UserPreferencesRepository
@@ -18,8 +16,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -75,12 +71,12 @@ init {
     }
 
     //UiState
-    private val _fLightSearchUiState : MutableStateFlow<HomeScreenUiState> = MutableStateFlow(HomeScreenUiState())
-    val flightSearchUiState: StateFlow<HomeScreenUiState> = _fLightSearchUiState
+    private val _fLightSearchUiState : MutableStateFlow<AppUiState> = MutableStateFlow(AppUiState())
+    val flightSearchUiState: StateFlow<AppUiState> = _fLightSearchUiState
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = HomeScreenUiState()
+            initialValue = AppUiState()
         )
 
 

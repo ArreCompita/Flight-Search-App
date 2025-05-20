@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import com.example.flightsearchapp.R
 import com.example.flightsearchapp.data.Airport
 import com.example.flightsearchapp.data.FavoriteRoute
-import com.example.flightsearchapp.ui.navigation.FlightDetailsCard
 import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 
 
@@ -36,7 +35,7 @@ import com.example.flightsearchapp.ui.theme.FlightSearchAppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    state: HomeScreenUiState,
+    state: AppUiState,
     onEvent: (UiEvent) -> Unit,
     ) {
 
@@ -82,14 +81,6 @@ fun HomeScreen(
                     onEvent = onEvent,
                 )
             }
-            else ->
-                Text(
-                    text = "Loading favorite routes...",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .align(alignment = Alignment.Start)
-                )
 
 
         }
@@ -102,7 +93,7 @@ fun HomeScreen(
 fun HomeScreenDetailsList(
     modifier: Modifier = Modifier,
     innerPadding: PaddingValues = PaddingValues(0.dp),
-    state: HomeScreenUiState,
+    state: AppUiState,
     onEvent: (UiEvent) -> Unit
 ){
 
@@ -147,7 +138,7 @@ fun HomeScreenDetailsList(
 fun HomeScreenDetailsListPreview() {
     FlightSearchAppTheme {
         HomeScreenDetailsList(
-            state = HomeScreenUiState(
+            state = AppUiState(
 
                 allAirports =
                     (List(5) { index ->
@@ -176,7 +167,7 @@ fun HomeScreenDetailsListPreview() {
 fun HomeScreenPreview() {
     FlightSearchAppTheme {
         HomeScreen(
-            state = HomeScreenUiState(
+            state = AppUiState(
                 allAirports =
                     (List(5) { index ->
                         Airport(
