@@ -11,6 +11,7 @@ Flight Search App developed as an Android jetpack compose practice.
 
 
 ![image](https://github.com/user-attachments/assets/3932a435-7c7f-4819-bfa9-8f1ef5c16b3c)
+![image](https://github.com/user-attachments/assets/92bdc4ea-b93a-4758-9020-d7e85b331e68)
 ![image](https://github.com/user-attachments/assets/458d20bf-0119-4952-88a7-862755bf4581)
 ![image](https://github.com/user-attachments/assets/93dda65e-ff4b-4488-961b-49f6db5f3342)
 ![image](https://github.com/user-attachments/assets/f6fd3c7a-eef7-43e3-b079-6d84fa84a5ce)
