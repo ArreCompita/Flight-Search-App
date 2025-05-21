@@ -1,2 +1,4 @@
 # FlightSearchAppPractice
-Repository with some apps developed as practice.
+Flight Search App developed as an Android jetpack compose practice.
+Working as expected
+--Details pending....
